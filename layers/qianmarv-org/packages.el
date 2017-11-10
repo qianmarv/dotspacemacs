@@ -12,9 +12,53 @@
 (defconst qianmarv-org-packages
   '(
     (org :location built-in)
+    (org-jira :location elpa)
     ;; org-pomodoro
     ))
 
+
+;; Refer to: https://github.com/jfim/org-jira
+;; Fixed authorization issue
+;;;; https://www.emacswiki.org/emacs/GnusEncryptedAuthInfo
+;;;; https://github.com/ahungry/org-jira
+(defun qianmarv-org/init-org-jira ()
+  (use-package org-jira
+;;    :defer t
+    :config
+    (progn
+      (spacemacs/declare-prefix-for-mode 'org-mode "mj" "jira")
+      (spacemacs/declare-prefix-for-mode 'org-mode "mjp" "projects")
+      (spacemacs/declare-prefix-for-mode 'org-mode "mji" "issues")
+      (spacemacs/declare-prefix-for-mode 'org-mode "mjs" "subtasks")
+      (spacemacs/declare-prefix-for-mode 'org-mode "mjc" "comments")
+      (spacemacs/declare-prefix-for-mode 'org-mode "mjt" "todos")
+      (spacemacs/set-leader-keys-for-major-mode 'org-mode
+        "jpg" 'org-jira-get-projects
+        "jib" 'org-jira-browse-issue
+        "jig" 'org-jira-get-issues
+        "jih" 'org-jira-get-issues-headonly
+        "jif" 'org-jira-get-issues-from-filter-headonly
+        "jiF" 'org-jira-get-issues-from-filter
+        "jiu" 'org-jira-update-issue
+        "jiw" 'org-jira-progress-issue
+        "jir" 'org-jira-refresh-issue
+        "jic" 'org-jira-create-issue
+        "jik" 'org-jira-copy-current-issue-key
+        "jsc" 'org-jira-create-subtask
+        "jsg" 'org-jira-get-subtasks
+        "jcu" 'org-jira-update-comment
+        "jtj" 'org-jira-todo-to-jira)
+      )
+    ))
+
+(defun qianmarv-org/post-init-org-jira()
+  (progn
+    (setq jiralib-url "https://sapjira.wdf.sap.corp:443")
+    (setq org-jira-working-dir "~/Emacs/GTD")
+    (setq org-jira-serv-alist '(
+                               (org-jira :username I074218)
+                               ))
+    ))
 ;; Refer to: https://github.com/zilongshanren/spacemacs-private/blob/develop/layers/zilongshanren-org/packages.el
 (defun qianmarv-org/post-init-org ()
   (add-hook 'org-mode-hook (lambda () (spacemacs/toggle-line-numbers-off)) 'append)
@@ -110,6 +154,13 @@
               ("o" "Other" entry (file+headline "~/Emacs/GTD/Event.org" "Other Interrupt")
                "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)))
 
-      (spacemacs/set-leader-keys "'" 'qianmarv-org/insert-screenshot)
+      (setq org-agenda-files
+            '(
+              "~/Emacs/GTD/Projects.org"
+              "~/Emacs/GTD/Event.org"
+              "~/Emacs/GTD/Agenda.org"
+              "~/Emacs/GTD/Habit.org"
+              ))
+      ;;      (spacemacs/set-leader-keys "'" 'qianmarv-org/insert-screenshot)
 
       )))

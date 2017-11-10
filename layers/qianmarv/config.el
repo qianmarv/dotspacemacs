@@ -13,6 +13,12 @@
 (setq user-full-name "Marvin Qian")
 (setq user-mail-address "qianmarv@gmail.com")
 
+(setq auth-sources
+      '((:source "~/.spacemacs.d/secrets/.authinfo.gpg")))
+
+(setq request-curl-options '("--insecure" ))
+
+
 ;; Set Default Path
 (setq default-directory (getenv "HOME"))
 
@@ -22,3 +28,9 @@
 ;; Set Time Display Format As 24H
 (setq display-time-24hr-format t)
 
+
+;; (setq request-log-level 'debug)
+;; (setq request-message-level 'debug)
+
+(setq request-log-level -1)
+(setq request-message-level -1)

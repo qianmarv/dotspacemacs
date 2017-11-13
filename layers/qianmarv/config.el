@@ -14,7 +14,7 @@
 (setq user-mail-address "qianmarv@gmail.com")
 
 (setq auth-sources
-      '((:source "~/.spacemacs.d/secrets/.authinfo.gpg")))
+      '((:source "~/Emacs/Personal/.authinfo.gpg")))
 
 (setq request-curl-options '("--insecure" ))
 
@@ -32,5 +32,5 @@
 ;; (setq request-log-level 'debug)
 ;; (setq request-message-level 'debug)
 
-(setq request-log-level -1)
-(setq request-message-level -1)
+;; (setq request-log-level -1)
+;; (setq request-message-level -1)

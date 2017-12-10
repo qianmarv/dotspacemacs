@@ -15,6 +15,7 @@
 (setq qianmarv-coding-packages
       '(
         css-mode
+        restclient  ;; https://github.com/pashky/restclient.el
         ))
 
 ;;------------------------------------------------------------------------------

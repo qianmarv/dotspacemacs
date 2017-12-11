@@ -112,17 +112,21 @@ if the folder is not exists, will create accordingly!"
 same directory as the org-buffer and insert a link to this file."
   (interactive)
   ;; (org-display-inline-images)
-  (setq foldername (concat (file-name-directory(buffer-file-name)) "img/")
+  (setq foldername (replace-regexp-in-string "\.org" "" (buffer-file-name))
+        ;; foldername (concat (file-name-directory (buffer-file-name)) "img/")
+        subfolder (replace-regexp-in-string "\.org" "" (file-name-nondirectory (buffer-file-name)))
         filename (format-time-string "%Y%m%d_%H%M%S.png")
-        fullfilename (concat foldername filename ))
+        fullfilename (concat foldername "/" filename ))
   (if (not (file-exists-p foldername))
       (mkdir foldername))
                                         ;convert bitmap from clipboard to file
   (if (eq system-type 'windows-nt)
-      (call-process "convert" nil nil nil "clipboard:" fullfilename))
+      ;; There's also another convert.exe which is out-of-box program in windows/system32
+      ;; Thus rename the convert name
+      (call-process "ImageMagick_convert" nil nil nil "clipboard:" fullfilename))
                                         ; insert into file if correctly taken
   (if (file-exists-p fullfilename)
-      (insert (concat "[[./IMG/" filename "]]"))))
+      (insert (message "[[./%s/%s]]" subfolder filename))))
 
 (defun qianmarv-org/insert-src-block (src-code-type)
   "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
@@ -141,3 +145,16 @@ same directory as the org-buffer and insert a link to this file."
     (insert "#+END_SRC\n")
     (previous-line 2)
     (org-edit-src-code)))
+
+
+;; Credit to https://emacs.stackexchange.com/questions/21713/how-to-get-property-values-from-org-file-headers
+(defun qianmarv-org/get-global-props (&optional property buffer)
+  "Get the plists of global org properties of current buffer."
+  (unless property (setq property "PROPERTY"))
+  (with-current-buffer (or buffer (current-buffer))
+    (org-element-map (org-element-parse-buffer) 'keyword (lambda (el) (when (string-match property (org-element-property :key el)) el)))))
+
+(defun qianmarv-org/get-global-prop(property)
+  (org-element-property :value (car (qianmarv-org/get-global-props property)))
+  )
+

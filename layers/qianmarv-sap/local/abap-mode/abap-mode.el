@@ -1,27 +1,10 @@
-<<<<<<< HEAD
 ;;; ABAP-MODE
 ;; Copyright (C) 2016 Marvin Qian (qianmarv@gmail.om)
 ;; Inspired by abap-mode from VinceZK (Vincent Zhang)
 ;; Features
 ;; - Syntax highlight
 ;; - Indent
-=======
-;;; abap-mode.el --- major mode for editing SAP ABAP/4 sources
-;;; -*- coding: utf-8 -*-
-
-;; Copyright 2011-2016 Marvin Qian
-
-;; Version: 0.0.1
-;; Package-Version: N/A
-;; Author: Marvin Qian <qianmarv AT Google DOT com>
-;; Maintainer: Marvin Qian
-;; URL:
-;; Repository:
-;; Created: Oct 2016
-;; Keywords: languages
-;; License: GNU General Public License >= 2
-;; Distribution: This file is not part of Emacs
-
+;;
 ;;==============================================================================
 ;; Special Thanks
 ;;
@@ -33,8 +16,6 @@
 ;;==============================================================================
 
 ;;; Code:
-
->>>>>>> 825c766be1c7d27c4d96aae506bb1d37e8c2c2b9
 
 ;; define keywords
 

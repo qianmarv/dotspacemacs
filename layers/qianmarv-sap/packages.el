@@ -66,26 +66,26 @@ Each entry is either:
 ;;; packages.el ends here
 
 
-(setq sap-packages
+(defconst qianmarv-sap-packages
       '(
         (abap-mode :location local)
         (sapwiki :location local)
         (sapjira :location local)
         ))
 
-(defun sap/init-sapwiki()
+(defun qianmarv-sap/init-sapwiki()
   (use-package sapwiki
     :init
     )
   )
 
-(defun sap/init-abap-mode ()
+(defun qianmarv-sap/init-abap-mode ()
   (use-package abap-mode
     :init
     )
   )
 
-(defun sap/init-sapjira()
+(defun qianmarv-sap/init-sapjira()
   (use-package sapjira
     :init
     )

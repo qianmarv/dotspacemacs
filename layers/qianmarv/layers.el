@@ -12,4 +12,6 @@
 (configuration-layer/declare-layers '(
                                       qianmarv-org
                                       qianmarv-coding
+                                      qianmarv-tool
+                                      qianmarv-sap
                                       ))

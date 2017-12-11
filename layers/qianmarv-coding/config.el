@@ -14,4 +14,10 @@
 ;; Racket
 ;;------------------------------------------------------------------------------
 (setq racket-racket-program "C:/Program Files/Racket/Racket.exe")
+
 (setq org-babel-racket-command "\"C:/Program Files/Racket/Racket.exe\"")
+
+;;------------------------------------------------------------------------------
+;; mit-scheme
+;;------------------------------------------------------------------------------
+(setq geiser-mit-binary "C:/Program Files (x86)/MIT-GNU Scheme/bin/mit-scheme.exe --library C:/Program Files (x86)/MIT-GNU Scheme/lib")

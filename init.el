@@ -66,7 +66,9 @@ values."
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
-   dotspacemacs-excluded-packages '()
+   dotspacemacs-excluded-packages '(
+                                    org-projectile
+                                    )
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
    ;; `used-only' installs only explicitly used packages and uninstall any
@@ -312,19 +314,19 @@ values."
  before packages are loaded. If you are unsure, you should try in setting them in
  `dotspacemacs/user-config' first."
  (setq configuration-layer--elpa-archives
-  '(("melpa-cn" . "http://elpa.emacs-china.org/melpa/")
-          ("org-cn"   . "http://elpa.emacs-china.org/org/")
-          ("gnu-cn"   . "http://elpa.emacs-china.org/gnu/")))
+       '(("melpa-cn" . "http://elpa.emacs-china.org/melpa/")
+         ("org-cn"   . "http://elpa.emacs-china.org/org/")
+         ("gnu-cn"   . "http://elpa.emacs-china.org/gnu/")))
  )
 
 (defun dotspacemacs/user-config ()
- "Configuration function for user code.
+  "Configuration function for user code.
  This function is called at the very end of Spacemacs initialization after
  layers configuration.
  This is the place where most of your configurations should be done. Unless it is
  explicitly specified that a variable should be set before a package is loaded,
  you should place your code here."
- )
+  )
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.

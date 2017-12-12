@@ -33,35 +33,37 @@ if the folder is not exists, will create accordingly!"
     "Automatic create daily memo based on template while first call capture in the month\
 the montly memo will be named as YYYY-MM.org, and will be put into base-path/YYYY \
 if the folder is not exists, will create accordingly!"
-    (let ((v-path (format "~/Emacs/Journal/%s" (format-time-string "%Y" (current-time))))
-          (v-filename (format "%s.org" (format-time-string "%Y-%m" (current-time)))))
-      (if (not (file-exists-p (format "%s" v-path))) (make-directory (format "%s" v-path)))
-      (if (not (file-exists-p (format "%s/%s" v-path v-filename)))
+    (let* ((v-path (format "~/Emacs/Journal/%s/" (format-time-string "%Y" (current-time))))
+           (v-filename (format "%s.org" (format-time-string "%Y-%m" (current-time))))
+           (v-fullfile (format "%s%s" v-path v-filename)))
+      (when (not (file-exists-p v-path)) (make-directory v-path))
+      (when (not (file-exists-p v-fullfile))
           (save-excursion
-            (copy-file "~/Emacs/Journal/template.org" (format "%s/%s" v-path v-filename))
+            (copy-file "~/Emacs/Journal/template.org" v-fullfile)
             (set-buffer (find-file-noselect (qianmarv-org/get-monthly)))
             (re-search-forward "<title>" (point-max) t 1)
-            (replace-match (format "Monthly Plan & Review for %s" (format-time-string "%Y-%m" (current-time))))))
-      (format "%s/%s" v-path v-filename)))
+            (replace-match (format "Monthly Plan & Review for %s" (format-time-string "%Y-%m" (current-time))))
+            (save-buffer)))
+      v-fullfile))
 
 (defun qianmarv-org/find-h1 (text)
   (progn
-   (goto-char (point-min))
-   (unless (derived-mode-p 'org-mode)
-     (error
-      "Target buffer \"%s\" for file+headline should be in Org mode"
-      (current-buffer)))
-   (if (re-search-forward
-        (format org-complex-heading-regexp-format text)
-        nil t)
-       (goto-char (point-at-bol))
-     (progn
-       (goto-char (point-max))
-       (insert (format "* %s\n" text))
-       ;; (goto-char (point-max))
-       ;; (goto-char (point-at-bol))
-       )
-     ))
+    (goto-char (point-min))
+    (unless (derived-mode-p 'org-mode)
+      (error
+       "Target buffer \"%s\" for file+headline should be in Org mode"
+       (current-buffer)))
+    (if (re-search-forward
+         (format org-complex-heading-regexp-format text)
+         nil t)
+        (goto-char (point-at-bol))
+      (progn
+        (goto-char (point-max))
+        (insert (format "* %s\n" text))
+        ;; (goto-char (point-max))
+        ;; (goto-char (point-at-bol))
+        )
+      ))
   )
 
 (defun qianmarv-org/find-date-entry()
@@ -83,9 +85,9 @@ if the folder is not exists, will create accordingly!"
       (insert "** " today)
       (goto-char (point-at-bol))
       ;; (beginning-of-line 0))
+      )
     )
   )
-)
 
 (defun qianmarv-org/find-date-entry-notes()
   (progn
@@ -132,7 +134,7 @@ same directory as the org-buffer and insert a link to this file."
   "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
   (interactive
    (let ((src-code-types
-          '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
+          '("abap" "emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
             "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
             "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
             "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
@@ -158,3 +160,4 @@ same directory as the org-buffer and insert a link to this file."
   (org-element-property :value (car (qianmarv-org/get-global-props property)))
   )
 
+(file-exists-p "C:/jack/")

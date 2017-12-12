@@ -142,14 +142,17 @@
       (setq org-crypt-key "AC88F93004D199BC")
 
 
+
+      ;;FIXME If the Emacs keep open then the file name would be not correct if passes one month!
+      (setq qianmarv-org/journal-file (qianmarv-org/get-monthly))
       (setq org-capture-templates
             '(("t" "Todo" entry (file+headline "~/Emacs/GTD/Inbox.org" "Tasks")
                "* %?\n %i\n")
-              ("j" "Morning Write" entry (file+function (qianmarv-org/get-monthly) qianmarv-org/find-date-entry)
+              ("j" "Morning Write" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry)
                "** Morning Write \n %?\n%T\n")
-              ("m" "Notes" plain (file+function (qianmarv-org/get-monthly) qianmarv-org/find-date-entry-notes)
+              ("m" "Notes" plain (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry-notes)
                "\n%T\n%?\n%a\n\n")
-              ("d" "Daily Review" entry (file+function (qianmarv-org/get-monthly) qianmarv-org/find-date-entry)
+              ("d" "Daily Review" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry)
                "** Daily Review\n %?\n%T\n")
               ("o" "Other" entry (file+headline "~/Emacs/GTD/Event.org" "Other Interrupt")
                "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)))
@@ -159,8 +162,11 @@
               "~/Emacs/GTD/Projects.org"
               "~/Emacs/GTD/Event.org"
               "~/Emacs/GTD/Agenda.org"
+              "~/Emacs/GTD/Calendar.org"
               "~/Emacs/GTD/Habit.org"
               ))
       ;;      (spacemacs/set-leader-keys "'" 'qianmarv-org/insert-screenshot)
 
       )))
+
+(format "\"%s\"" (qianmarv-org/get-monthly))

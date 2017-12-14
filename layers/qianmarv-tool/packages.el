@@ -21,9 +21,10 @@
 ;;------------------------------------------------------------------------------
 (defun qianmarv-coding/init-google-translate()
   (use-package google-translate)
-  :config
-  (progn
-    (setq google-translate-default-target-language "zh-CN")
-    )
+  (with-eval-after-load google-translate
+    :config
+    (progn
+      (setq google-translate-default-target-language "zh-CN")
+      ))
   )
 

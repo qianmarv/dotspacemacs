@@ -169,4 +169,3 @@
 
       )))
 
-(format "\"%s\"" (qianmarv-org/get-monthly))

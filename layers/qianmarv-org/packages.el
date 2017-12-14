@@ -168,5 +168,3 @@
       ;;      (spacemacs/set-leader-keys "'" 'qianmarv-org/insert-screenshot)
 
       )))
-
-(format "\"%s\"" (qianmarv-org/get-monthly))

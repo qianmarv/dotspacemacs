@@ -168,4 +168,3 @@
       ;;      (spacemacs/set-leader-keys "'" 'qianmarv-org/insert-screenshot)
 
       )))
-

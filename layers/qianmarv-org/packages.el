@@ -12,7 +12,7 @@
 (defconst qianmarv-org-packages
   '(
     (org :location built-in)
-    (org-jira :location elpa)
+    ;; (org-jira :location elpa)
     ;; org-pomodoro
     ))
 
@@ -21,44 +21,44 @@
 ;; Fixed authorization issue
 ;;;; https://www.emacswiki.org/emacs/GnusEncryptedAuthInfo
 ;;;; https://github.com/ahungry/org-jira
-(defun qianmarv-org/init-org-jira ()
-  (use-package org-jira
-;;    :defer t
-    :config
-    (progn
-      (spacemacs/declare-prefix-for-mode 'org-mode "mj" "jira")
-      (spacemacs/declare-prefix-for-mode 'org-mode "mjp" "projects")
-      (spacemacs/declare-prefix-for-mode 'org-mode "mji" "issues")
-      (spacemacs/declare-prefix-for-mode 'org-mode "mjs" "subtasks")
-      (spacemacs/declare-prefix-for-mode 'org-mode "mjc" "comments")
-      (spacemacs/declare-prefix-for-mode 'org-mode "mjt" "todos")
-      (spacemacs/set-leader-keys-for-major-mode 'org-mode
-        "jpg" 'org-jira-get-projects
-        "jib" 'org-jira-browse-issue
-        "jig" 'org-jira-get-issues
-        "jih" 'org-jira-get-issues-headonly
-        "jif" 'org-jira-get-issues-from-filter-headonly
-        "jiF" 'org-jira-get-issues-from-filter
-        "jiu" 'org-jira-update-issue
-        "jiw" 'org-jira-progress-issue
-        "jir" 'org-jira-refresh-issue
-        "jic" 'org-jira-create-issue
-        "jik" 'org-jira-copy-current-issue-key
-        "jsc" 'org-jira-create-subtask
-        "jsg" 'org-jira-get-subtasks
-        "jcu" 'org-jira-update-comment
-        "jtj" 'org-jira-todo-to-jira)
-      )
-    ))
+;; (defun qianmarv-org/init-org-jira ()
+;;   (use-package org-jira
+;; ;;    :defer t
+;;     :config
+;;     (progn
+;;       (spacemacs/declare-prefix-for-mode 'org-mode "mj" "jira")
+;;       (spacemacs/declare-prefix-for-mode 'org-mode "mjp" "projects")
+;;       (spacemacs/declare-prefix-for-mode 'org-mode "mji" "issues")
+;;       (spacemacs/declare-prefix-for-mode 'org-mode "mjs" "subtasks")
+;;       (spacemacs/declare-prefix-for-mode 'org-mode "mjc" "comments")
+;;       (spacemacs/declare-prefix-for-mode 'org-mode "mjt" "todos")
+;;       (spacemacs/set-leader-keys-for-major-mode 'org-mode
+;;         "jpg" 'org-jira-get-projects
+;;         "jib" 'org-jira-browse-issue
+;;         "jig" 'org-jira-get-issues
+;;         "jih" 'org-jira-get-issues-headonly
+;;         "jif" 'org-jira-get-issues-from-filter-headonly
+;;         "jiF" 'org-jira-get-issues-from-filter
+;;         "jiu" 'org-jira-update-issue
+;;         "jiw" 'org-jira-progress-issue
+;;         "jir" 'org-jira-refresh-issue
+;;         "jic" 'org-jira-create-issue
+;;         "jik" 'org-jira-copy-current-issue-key
+;;         "jsc" 'org-jira-create-subtask
+;;         "jsg" 'org-jira-get-subtasks
+;;         "jcu" 'org-jira-update-comment
+;;         "jtj" 'org-jira-todo-to-jira)
+;;       )
+;;     ))
 
-(defun qianmarv-org/post-init-org-jira()
-  (progn
-    (setq jiralib-url "https://sapjira.wdf.sap.corp:443")
-    (setq org-jira-working-dir "~/Emacs/GTD")
-    (setq org-jira-serv-alist '(
-                               (org-jira :username I074218)
-                               ))
-    ))
+;; (defun qianmarv-org/post-init-org-jira()
+;;   (progn
+;;     (setq jiralib-url "https://sapjira.wdf.sap.corp:443")
+;;     (setq org-jira-working-dir "~/Emacs/GTD")
+;;     (setq org-jira-serv-alist '(
+;;                                (org-jira :username I074218)
+;;                                ))
+;;     ))
 ;; Refer to: https://github.com/zilongshanren/spacemacs-private/blob/develop/layers/zilongshanren-org/packages.el
 (defun qianmarv-org/post-init-org ()
   (add-hook 'org-mode-hook (lambda () (spacemacs/toggle-line-numbers-off)) 'append)
@@ -93,9 +93,10 @@
       ;; Removes Clocked Tasks With 0:00 Duration
       (setq org-clock-out-remove-zero-time-clocks t)
 
-      ;; When Setting This Variable To {},
+      ;; When Setting This Variable To nil,
       ;; 'a_b' Will Not Be Interpreted As A Subscript, But 'a_{b}' Will.
-      (setq org-use-sub-superscripts '{})
+      ;; Default value is t
+      (setq org-export-with-sub-superscripts nil)
 
       ;; Active Org-babel languages
 ;;      (org-babel-do-load-languages
@@ -144,6 +145,7 @@
 
 
       ;;FIXME If the Emacs keep open then the file name would be not correct if passes one month!
+      ;;TODO Put it in a single Journal.org file, and like other files, keep data for one year only.
       (setq qianmarv-org/journal-file (qianmarv-org/get-monthly))
       (setq org-capture-templates
             '(("t" "Todo" entry (file+headline "~/Emacs/GTD/Inbox.org" "Tasks")

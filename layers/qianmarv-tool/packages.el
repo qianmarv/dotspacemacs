@@ -13,18 +13,34 @@
 (defconst qianmarv-tool-packages
   '(
     google-translate
+    excorporate
     ))
 
 ;;------------------------------------------------------------------------------
 ;; google-translate
 ;; https://github.com/atykhonov/google-translate
 ;;------------------------------------------------------------------------------
-(defun qianmarv-coding/init-google-translate()
-  (use-package google-translate)
-  (with-eval-after-load google-translate
-    :config
+(defun qianmarv-tool/post-init-google-translate()
+  (with-eval-after-load 'google-translate
     (progn
       (setq google-translate-default-target-language "zh-CN")
+      ))
+  )
+
+;;------------------------------------------------------------------------------
+;; excorporate
+;; https://www.emacswiki.org/emacs/MsOutlook
+;;------------------------------------------------------------------------------
+(defun qianmarv-tool/init-excorporate ()
+  (use-package excorporate
+    :defer t
+    :init
+    (spacemacs/declare-prefix  "ae" "excorporate")
+    (spacemacs/set-leader-keys "aec" 'qianmarv-tool/exco-connect)
+    (spacemacs/set-leader-keys "ae." 'qianmarv-tool/exco-show-today)
+    :config
+    (progn
+      (setq excorporate-configuration "marvin.qian@sap.com")
       ))
   )
 

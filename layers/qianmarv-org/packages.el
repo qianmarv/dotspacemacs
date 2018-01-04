@@ -146,9 +146,10 @@
 
       ;;FIXME If the Emacs keep open then the file name would be not correct if passes one month!
       ;;TODO Put it in a single Journal.org file, and like other files, keep data for one year only.
+      (setq qianmarv-org/gtd-path "~/Emacs/GTD/2018")
       (setq qianmarv-org/journal-file (qianmarv-org/get-monthly))
       (setq org-capture-templates
-            '(("t" "Todo" entry (file+headline "~/Emacs/GTD/Inbox.org" "Tasks")
+            `(("t" "Todo" entry (file+headline ,(format "%s/Inbox.org" qianmarv-org/gtd-path ) "Tasks")
                "* %?\n %i\n")
               ("j" "Morning Write" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry)
                "** Morning Write \n %?\n%T\n")
@@ -156,16 +157,16 @@
                "\n%T\n%?\n%a\n\n")
               ("d" "Daily Review" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry)
                "** Daily Review\n %?\n%T\n")
-              ("o" "Other" entry (file+headline "~/Emacs/GTD/Event.org" "Other Interrupt")
+              ("o" "Other" entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Other Interrupt")
                "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)))
 
       (setq org-agenda-files
-            '(
-              "~/Emacs/GTD/Projects.org"
-              "~/Emacs/GTD/Event.org"
-              "~/Emacs/GTD/Agenda.org"
-              "~/Emacs/GTD/Calendar.org"
-              "~/Emacs/GTD/Habit.org"
+            `(
+              ,(format "%s/Projects.org" qianmarv-org/gtd-path)
+              ,(format "%s/Event.org" qianmarv-org/gtd-path)
+              ,(format "%s/Agenda.org" qianmarv-org/gtd-path)
+              ,(format "%s/Calendar.org" qianmarv-org/gtd-path)
+              ,(format "%s/Habit.org" qianmarv-org/gtd-path)
               ))
       ;;      (spacemacs/set-leader-keys "'" 'qianmarv-org/insert-screenshot)
 

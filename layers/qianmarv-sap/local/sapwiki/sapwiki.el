@@ -1059,7 +1059,7 @@ of contents as a string, or nil if it is empty."
                          (org-html-begin-plain-list type))
                     itemized-body
                     (and (org-export-last-sibling-p headline info)
-                         (org-html-end-plain-list type))))
+                         (dk-html-end-plain-list type))))
         (let ((extra-class (org-element-property :HTML_CONTAINER_CLASS headline))
               (first-content (car (org-element-contents headline))))
           ;; Standard headline.  Export it as a section.
@@ -1088,6 +1088,13 @@ of contents as a string, or nil if it is empty."
     (unordered "<ul>")
     (descriptive "<dl>")))
 
+(defun dk-html-end-plain-list (type)
+  "Insert the end of the HTML list depending on TYPE."
+  (case type
+    (ordered "</ol>")
+    (unordered "</ul>")
+    (descriptive "</dl>")))
+
 (defun dk-sapwiki-plain-list (plain-list contents info)
   "Transcode a PLAIN-LIST element from Org to HTML.
 CONTENTS is the contents of the list.  INFO is a plist holding
@@ -1096,7 +1103,7 @@ contextual information."
 	 (type (org-element-property :type plain-list)))
     (format "%s\n%s%s"
 	    (dk-html-begin-plain-list type)
-	    contents (org-html-end-plain-list type))))
+	    contents (dk-html-end-plain-list type))))
 
 (defun dk-html--wrap-image (contents info &optional caption label)
   "Wrap CONTENTS string within an appropriate environment for images.INFO is a plist used as a communication channel.  When optional arguments CAPTION and LABEL are given, use them for caption and \"id\" attribute."

@@ -66,11 +66,13 @@
     (progn
       (spacemacs|disable-company org-mode)
       (spacemacs/set-leader-keys-for-major-mode 'org-mode
-        "," 'org-priority)
+        "," 'org-priority
+        "ir" 'qianmarv-org/insert-src-block
+        "ip" 'qianmarv-org/insert-screenshot)
       (require 'org-compat)
       (require 'org)
       ;; (add-to-list 'org-modules "org-habit")
-      (add-to-list 'org-modules 'org-habit)
+      ;; (add-to-list 'org-modules 'org-habit)
       (require 'org-habit)
       ;; Set auto fill in text mode
       (add-hook 'org-mode-hook 'auto-fill-mode)

@@ -95,6 +95,9 @@
       ;; Removes Clocked Tasks With 0:00 Duration
       (setq org-clock-out-remove-zero-time-clocks t)
 
+      ;; Set Org Clock, Change default leve from 2 to 3
+      (setq org-clock-clocktable-default-properties '(:maxlevel 3 :scope file))
+
       ;; When Setting This Variable To nil,
       ;; 'a_b' Will Not Be Interpreted As A Subscript, But 'a_{b}' Will.
       ;; Default value is t
@@ -142,6 +145,7 @@
       (setq org-tags-exclude-from-inheritance (quote ("crypt")))
       ;; GPG key to use for encryption
       ;; Either the Key ID or set to nil to use symmetric encryption.
+      ;; 
       (setq org-crypt-key "AC88F93004D199BC")
 
 

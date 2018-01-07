@@ -11,13 +11,14 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Racket
+;; Racket / mit-scheme
 ;;------------------------------------------------------------------------------
-(setq racket-racket-program "C:/Program Files/Racket/Racket.exe")
 
-(setq org-babel-racket-command "\"C:/Program Files/Racket/Racket.exe\"")
+(when (string-equal system-type "windows-nt")
+  (progn
+    (setq racket-program "C:/Program Files/Racket/Racket.exe")
+    (setq org-babel-racket-command "\"C:/Program Files/Racket/Racket.exe\"")
+    (setq geiser-mit-binary "C:/Program Files (x86)/MIT-GNU Scheme/bin/mit-scheme.exe --library C:/Program Files (x86)/MIT-GNU Scheme/lib")
+    ))
 
-;;------------------------------------------------------------------------------
-;; mit-scheme
-;;------------------------------------------------------------------------------
-(setq geiser-mit-binary "C:/Program Files (x86)/MIT-GNU Scheme/bin/mit-scheme.exe --library C:/Program Files (x86)/MIT-GNU Scheme/lib")
+

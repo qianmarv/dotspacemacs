@@ -176,4 +176,29 @@
               ))
       ;;      (spacemacs/set-leader-keys "'" 'qianmarv-org/insert-screenshot)
 
+      ;; --------------------------------------------------------------------
+      ;; Settings for Reminder - appt
+      ;; Refer to: https://emacs.stackexchange.com/questions/3844/good-methods-for-setting-up-alarms-audio-visual-triggered-by-org-mode-events
+      ;; --------------------------------------------------------------------
+      (setq appt-disp-window-function 'qianmarv-org/show-alarm)
+      (setq appt-message-warning-time 5) ; Show notification 5 minutes before event
+      (setq appt-display-interval appt-message-warning-time) ; Disable multiple reminders
+      (setq appt-display-mode-line nil)
+      ;; Add Desktop Notification
+      ;; Refer to https://gist.github.com/jstewart/7664823
+      (add-hook 'org-pomodoro-finished-hook
+                (lambda ()
+                  (qianmarv-org/show-alarm 0 0 "Pomodoro completed! - Time for a break.")))
+
+      (add-hook 'org-pomodoro-break-finished-hook
+                (lambda ()
+                  (qianmarv-org/show-alarm 0 0 "Pomodoro Short Break Finished - Ready for Another?")))
+
+      (add-hook 'org-pomodoro-long-break-finished-hook
+                (lambda ()
+                  (qianmarv-org/show-alarm 0 0 "Pomodoro Long Break Finished - Ready for Another?")))
+
+      (add-hook 'org-pomodoro-killed-hook
+                (lambda ()
+                  (qianmarv-org/show-alarm 0 0 "Pomodoro Killed - One does not simply kill a pomodoro!")))
       )))

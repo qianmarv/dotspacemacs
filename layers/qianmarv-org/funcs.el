@@ -159,5 +159,14 @@ same directory as the org-buffer and insert a link to this file."
 (defun qianmarv-org/get-global-prop(property)
   (org-element-property :value (car (qianmarv-org/get-global-props property)))
   )
+;; Different Apps to Be Called Under Different OS Platform
+;;   Win: Powershell Tool https://github.com/Windos/BurntToast
+(defun qianmarv-org/show-alarm (min-to-app new-time message)
+  (cond ((string-equal system-type "windows-nt")
+         (call-process "powershell"
+                       nil
+                       t
+                       nil
+                       (format " New-BurntToastNotification -Text '%s' -Sound 'Alarm2' -SnoozeAndDismiss" message)
+                       ))))
 
-(file-exists-p "C:/jack/")

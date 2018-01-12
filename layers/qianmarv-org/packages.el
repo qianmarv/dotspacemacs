@@ -12,7 +12,8 @@
 (defconst qianmarv-org-packages
   '(
     (org :location built-in)
-    ;; (org-jira :location elpa)
+    (org-jira :location elpa)
+              ;;(recipe :fetcher github :repo "qianmarv/org-jira"))
     ;; org-pomodoro
     ))
 
@@ -21,35 +22,35 @@
 ;; Fixed authorization issue
 ;;;; https://www.emacswiki.org/emacs/GnusEncryptedAuthInfo
 ;;;; https://github.com/ahungry/org-jira
-;; (defun qianmarv-org/init-org-jira ()
-;;   (use-package org-jira
-;; ;;    :defer t
-;;     :config
-;;     (progn
-;;       (spacemacs/declare-prefix-for-mode 'org-mode "mj" "jira")
-;;       (spacemacs/declare-prefix-for-mode 'org-mode "mjp" "projects")
-;;       (spacemacs/declare-prefix-for-mode 'org-mode "mji" "issues")
-;;       (spacemacs/declare-prefix-for-mode 'org-mode "mjs" "subtasks")
-;;       (spacemacs/declare-prefix-for-mode 'org-mode "mjc" "comments")
-;;       (spacemacs/declare-prefix-for-mode 'org-mode "mjt" "todos")
-;;       (spacemacs/set-leader-keys-for-major-mode 'org-mode
-;;         "jpg" 'org-jira-get-projects
-;;         "jib" 'org-jira-browse-issue
-;;         "jig" 'org-jira-get-issues
-;;         "jih" 'org-jira-get-issues-headonly
-;;         "jif" 'org-jira-get-issues-from-filter-headonly
-;;         "jiF" 'org-jira-get-issues-from-filter
-;;         "jiu" 'org-jira-update-issue
-;;         "jiw" 'org-jira-progress-issue
-;;         "jir" 'org-jira-refresh-issue
-;;         "jic" 'org-jira-create-issue
-;;         "jik" 'org-jira-copy-current-issue-key
-;;         "jsc" 'org-jira-create-subtask
-;;         "jsg" 'org-jira-get-subtasks
-;;         "jcu" 'org-jira-update-comment
-;;         "jtj" 'org-jira-todo-to-jira)
-;;       )
-;;     ))
+(defun qianmarv-org/init-org-jira ()
+  (use-package org-jira
+;;    :defer t
+    :config
+    (progn
+      (spacemacs/declare-prefix-for-mode 'org-mode "mj" "jira")
+      (spacemacs/declare-prefix-for-mode 'org-mode "mjp" "projects")
+      (spacemacs/declare-prefix-for-mode 'org-mode "mji" "issues")
+      (spacemacs/declare-prefix-for-mode 'org-mode "mjs" "subtasks")
+      (spacemacs/declare-prefix-for-mode 'org-mode "mjc" "comments")
+      (spacemacs/declare-prefix-for-mode 'org-mode "mjt" "todos")
+      (spacemacs/set-leader-keys-for-major-mode 'org-mode
+        "jpg" 'org-jira-get-projects
+        "jib" 'org-jira-browse-issue
+        "jig" 'org-jira-get-issues
+        "jih" 'org-jira-get-issues-headonly
+        "jif" 'org-jira-get-issues-from-filter-headonly
+        "jiF" 'org-jira-get-issues-from-filter
+        "jiu" 'org-jira-update-issue
+        "jiw" 'org-jira-progress-issue
+        "jir" 'org-jira-refresh-issue
+        "jic" 'org-jira-create-issue
+        "jik" 'org-jira-copy-current-issue-key
+        "jsc" 'org-jira-create-subtask
+        "jsg" 'org-jira-get-subtasks
+        "jcu" 'org-jira-update-comment
+        "jtj" 'org-jira-todo-to-jira)
+      )
+    ))
 
 ;; (defun qianmarv-org/post-init-org-jira()
 ;;   (progn

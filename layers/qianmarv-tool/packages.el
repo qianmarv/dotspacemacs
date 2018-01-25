@@ -13,7 +13,8 @@
 (defconst qianmarv-tool-packages
   '(
     google-translate
-    excorporate
+    (excorporate
+     :location (recipe :fetcher github :repo "qianmarv/excorporate"))
     ))
 
 ;;------------------------------------------------------------------------------

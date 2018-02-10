@@ -211,4 +211,4 @@
       ;;   (org-jira-update-worklogs-for-current-issue))
       )))
 
-provide 'sapjira
+(provide 'sapjira)

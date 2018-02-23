@@ -210,3 +210,6 @@
       ;; (when org-jira-worklog-sync-p
       ;;   (org-jira-update-worklogs-for-current-issue))
       )))
+
+
+(provide 'sapjira)

@@ -68,7 +68,7 @@ Each entry is either:
 
 (defconst qianmarv-sap-packages
       '(
-        (abap-mode :location local)
+        (sap-abap-mode :location local)
         (sapwiki :location local)
         (sapjira :location local)
         ))
@@ -79,8 +79,8 @@ Each entry is either:
     )
   )
 
-(defun qianmarv-sap/init-abap-mode ()
-  (use-package abap-mode
+(defun qianmarv-sap/init-sap-abap-mode ()
+  (use-package sap-abap-mode
     :init
     )
   )

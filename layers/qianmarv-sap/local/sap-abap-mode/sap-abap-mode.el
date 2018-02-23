@@ -32,10 +32,10 @@
 
 ;;; Code:
 
+;;; Dev Log
+;; FIXME Only when * is in the begining of the line should the line be comment line!
 
-
-;; define keywords
-
+;; define keywords 
 ;; ABAP keywords
 ;; Refer to https://help.sap.com/doc/abapdocu_751_index_htm/7.51/en-US/abenabap_statements_overview.htm
 (require 'sap-abap-indention)
@@ -329,18 +329,34 @@
         "PROVIDE" "ENDPROVIDE"
 
         ;; Not Listed in Previous Section, But Somehow is Keyword
-        "FIELDSYMBOL"
-                          ))
+        ;; TODO Should be assembled in a regular expression form
+        "FIELD-SYMBOL"
+        "ASSIGNING"
+        "EQ" "LE" "LT" "GT" "GE" "NE"
+        "IS" "INITIAL" "BOUND" "FOUND"
+        "AND" "OR" "NOT" "IN"
+        "USING" "CHANGING"
+        "VALUE" "INTO" "SINGLE"
+        "WHERE" "ORDER BY" "ASCENDING" "DESCENDING" "HAVING"
+        "TYPE" "OF" "LENGTH" "REF" "TO" "BY"
+        "IMPLEMENTATION" "DEFINITION"
+        "EXPORTING" "IMPORTING" "RETURNING" "EXCEPTIONS"
+        "BEGIN" "END"
+        "ADJACENT" "DUPLICATES" "FROM" "LINES"
+        "WITH" "DEFAULT" "UNIQUE" "KEY"
+        "TRANSPORTING" "NO FIELDS"
+        "STANDARD" "SORTED" "HASHED" "TABLE"
+        ))
 
 ;; (setq sap-abap-keywords '("REPORT" "DATA" "DATA:" "TYPE" "REF" "TYPES" "TABLES" "AT" "BEGIN" "OF" "TIMES" "PERFORM" "APPEND" "CLEAR" "TO" "CALL" "FUNCTION" "EXPORTING" "EXCEPTIONS" "SELECT" "UP" "FROM" "INTO" "CORRESPONDING" "FIELDS" "TABLE" "GT" "LT" "EQ" "LE" "GE" "INSERT" "INTO" "MODIFY" "WHEN" "USING" "LIKE" "CHANGING" "TYPE-POOLS" "ROWS" "INITIAL" "SIZE" "WITH" "HEADER" "LINE" "LINES" "WRITE" "ASSIGNING" "READ" "IMPORT" "EXPORT"  "IMPORTING" "PUBLIC" "FINAL" "DEFINITION" "CREATE PUBLIC" "PUBLIC SECTION" "CLASS-METHODS" "PROTECTED SECTION" "PRIVATE SECTION" "METHODS" "CONSTANTS" "VALUE" "NOT" "IS" "BOUND" "IMPLEMENTATION" "CHECK"))
 
 
 ;; (setq sap-abap-keywords (append sap-abap-keywords-open sap-abap-keywords-close sap-abap-keywords))
 
-(setq sap-abap-types    '("C" "I" "F" "STRING" "X" "XSTRING") )
-(setq sap-abap-constants '("SPACE" "SY-" ))
+(setq sap-abap-types    '("C" "I" "F" "STRING" "X" "XSTRING" "N" "P" "ABAP_BOOL") )
+(setq sap-abap-constants '("SPACE" "SY-" "ABAP_FALSE" "ABAP_TRUE"))
 (setq sap-abap-events    '("START-OF-SELECTION" "AT SELECTION-SCREEN"))
-(setq sap-abap-functions '("STRLEN" "CONCATENATE" "SPLIT"))
+(setq sap-abap-functions '("STRLEN" "CONCATENATE" "SPLIT" ))
 
 ;; Generate regex string for each category
 (setq sap-abap-keywords-regexp  ( regexp-opt sap-abap-keywords  'words))

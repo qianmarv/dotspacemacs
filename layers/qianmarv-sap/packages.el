@@ -65,12 +65,16 @@ Each entry is either:
 
 ;;; packages.el ends here
 
-
+;;; Seems that quelpa not working well on windows!!
+;;; Had to run from MINGW at first run in order to install from github
 (defconst qianmarv-sap-packages
       '(
-        (sap-abap-mode :location local)
+        (sap-abap-mode
+         :location (recipe :fetcher github :repo "qianmarv/sap-abap-mode"))
+
         (sapwiki :location local)
-        (sapjira :location local)
+        ;; (sapjira :location local)
+
         ))
 
 (defun qianmarv-sap/init-sapwiki()
@@ -85,11 +89,11 @@ Each entry is either:
     )
   )
 
-(defun qianmarv-sap/init-sapjira()
-  (use-package sapjira
-    :init
-    )
-  )
+;; (defun qianmarv-sap/init-sapjira()
+;;   (use-package sapjira
+;;     :init
+;;     )
+;;   )
 
 (setq dk-sapwiki-user "I074218")
 (setq org-publish-project-alist

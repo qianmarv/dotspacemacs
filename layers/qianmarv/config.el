@@ -13,8 +13,8 @@
 (setq user-full-name "Marvin Qian")
 (setq user-mail-address "qianmarv@gmail.com")
 
-(setq auth-sources
-      '((:source "~/Emacs/Personal/.authinfo.gpg")))
+;; (setq auth-sources
+;;       '((:source "~/Emacs/Personal/.authinfo.gpg")))
 
 (setq request-curl-options '("--insecure" ))
 
@@ -42,8 +42,8 @@
 (setq display-time-24hr-format t)
 
 
-;; (setq request-log-level 'debug)
- ;; (setq request-message-level 'debug)
+(setq request-log-level 'debug)
+(setq request-message-level 'debug)
 
 ;; (setq request-log-level -1)
 ;; (setq request-message-level -1)

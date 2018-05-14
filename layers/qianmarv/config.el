@@ -42,8 +42,11 @@
 (setq display-time-24hr-format t)
 
 
-(setq request-log-level 'debug)
-(setq request-message-level 'debug)
+;; (setq request-log-level 'debug)
 
-;; (setq request-log-level -1)
-;; (setq request-message-level -1)
+;; (setq request-message-level 'debug)
+
+ ;; (setq request-log-level -1)
+
+ ;; (setq request-message-level -1)
+

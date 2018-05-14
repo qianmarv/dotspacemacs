@@ -10,6 +10,7 @@
 ;;; License: GPLv3
 
 (configuration-layer/declare-layers '(
+                                      spacemacs-misc
                                       qianmarv-org
                                       qianmarv-coding
                                       qianmarv-tool

@@ -12,12 +12,38 @@
 (defconst qianmarv-org-packages
   '(
     (org :location built-in)
+    (org-super-agenda)
     ;; (org-jira
     ;;  ;; :location elpa)
     ;;  :location (recipe :fetcher github :repo "qianmarv/org-jira"))
     ;; org-pomodoro
     ))
 
+(defun qianmarv-org/init-org-super-agenda()
+  (use-package org-super-agenda
+    :after org-agenda
+    :config
+    (setq org-super-agenda-groups
+          '((:name "Log "
+                   :log t)
+            (:name "Schedule "
+                   :time-grid t)
+            (:name "Today "
+                   :scheduled today)
+            (:name "Habits "
+                   :habit t)
+            (:name "Due today "
+                   :deadline today)
+            (:name "Overdue "
+                   :deadline past)
+            (:name "Due soon "
+                   :deadline future)
+            (:name "Waiting "
+                   :todo "WAIT"
+                   :order 98)
+            (:name "Scheduled earlier "
+                   :scheduled past)))
+    (org-super-agenda-mode)))
 ;; Refer to: https://github.com/jfim/org-jira
 ;; Fixed authorization issue
 ;;;; https://www.emacswiki.org/emacs/GnusEncryptedAuthInfo

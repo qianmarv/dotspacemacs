@@ -13,6 +13,7 @@
 (defconst qianmarv-tool-packages
   '(
     google-translate
+    cnfonts
     (excorporate
      :location (recipe :fetcher github :repo "qianmarv/excorporate"))
     ))
@@ -44,4 +45,22 @@
       (setq excorporate-configuration "marvin.qian@sap.com")
       ))
   )
+
+;;------------------------------------------------------------------------------
+;; cnfonts
+;; https://github.com/tumashu/cnfonts
+;;------------------------------------------------------------------------------
+(defun qianmarv-tool/init-cnfonts()
+  (use-package cnfonts
+    :init
+    :config
+    (progn
+      (cnfonts-enable)
+      (cnfonts-set-spacemacs-fallback-fonts)
+      (setq cnfonts-profiles
+            '("program" "org-mode" "read-book"))
+      (setq cnfonts-use-face-font-rescale t)
+      ))
+  )
+
 

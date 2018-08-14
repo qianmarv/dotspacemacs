@@ -14,9 +14,20 @@
   '(
     google-translate
     cnfonts
+    nov
     (excorporate
      :location (recipe :fetcher github :repo "qianmarv/excorporate"))
     ))
+
+;;------------------------------------------------------------------------------
+;; ebookreader
+;; https://github.com/bddean/emacs-nov
+;;------------------------------------------------------------------------------
+(defun qianmarv-tool/init-nov()
+  (use-package nov)
+  :init
+  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+  )
 
 ;;------------------------------------------------------------------------------
 ;; google-translate

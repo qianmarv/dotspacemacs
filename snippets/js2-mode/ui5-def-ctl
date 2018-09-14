@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: sapui5 define controller
+# key: ui5-def-ctl
+# --
+
+sap.ui.define([
+    "sap/ui/core/mvc/Controller" $2
+], function(Controller) {
+    "use strict";
+    return Controller.extend("$1", {
+        onInit : function() {
+            $0
+        }
+    });
+});

@@ -62,9 +62,7 @@ if the folder is not exists, will create accordingly!"
         (insert (format "* %s\n" text))
         ;; (goto-char (point-max))
         ;; (goto-char (point-at-bol))
-        )
-      ))
-  )
+        ))))
 
 (defun qianmarv-org/find-date-entry()
   (progn
@@ -85,14 +83,11 @@ if the folder is not exists, will create accordingly!"
       (insert "** " today)
       (goto-char (point-at-bol))
       ;; (beginning-of-line 0))
-      )
-    )
-  )
+      )))
 
 (defun qianmarv-org/find-date-entry-notes()
-  (progn
+  (let ((notes-title "Memo"))
     (qianmarv-org/find-date-entry)
-    (setq notes "Notes")
     (unless (derived-mode-p 'org-mode)
       (error
        "Target buffer \"%s\" for file+headline should be in Org mode"
@@ -103,11 +98,9 @@ if the folder is not exists, will create accordingly!"
         (goto-char (point-at-eol))
       (goto-char (point-max))
       (or (bolp) (insert "\n"))
-      (insert "*** " notes)
+      (insert "*** " notes-title)
       (goto-char (point-at-eol))
-      )
-    )
-  )
+      )))
 
 (defun qianmarv-org/insert-screenshot ()
   "Take a screenshot into a time stamped unique-named file in the

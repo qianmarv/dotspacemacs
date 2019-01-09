@@ -11,7 +11,7 @@
 
 (configuration-layer/declare-layers '(
                                       spacemacs-misc
-                                      qianmarv-org
+                                      ;; qianmarv-org
                                       qianmarv-coding
                                       qianmarv-tool
                                       qianmarv-sap

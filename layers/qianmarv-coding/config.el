@@ -21,7 +21,7 @@
     (setq geiser-mit-binary "C:/Program Files (x86)/MIT-GNU Scheme/bin/mit-scheme.exe --library C:/Program Files (x86)/MIT-GNU Scheme/lib")
     ))
 
-(setq yas-snippet-dirs (append yas-snippet-dirs
-                               '("~/.spacemacs.d/snippets")))
+;; (setq yas-snippet-dirs (append yas-snippet-dirs
+;;                               '("~/.spacemacs.d/snippets")))
 
 

@@ -15,6 +15,7 @@
 (setq qianmarv-coding-packages
       '(
         css-mode
+        js2-mode
         ;; restclient  ;; https://github.com/pashky/restclient.el
         ))
 
@@ -26,4 +27,12 @@
     (dolist (hook '(css-mode-hook sass-mode-hook less-mode-hook))
       (add-hook hook 'rainbow-mode))
     ))
+
+(defun qianmarv-coding/post-init-js2-mode()
+  (progn
+    (with-eval-after-load 'js2-mode
+      (progn
+        (spacemacs/set-leader-keys-for-major-mode 'js2-mode "gl" 'helm-imenu)))
+))
+
 

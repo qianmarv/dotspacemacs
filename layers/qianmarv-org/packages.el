@@ -180,20 +180,20 @@
 
       ;;FIXME If the Emacs keep open then the file name would be not correct if passes one month!
       ;;TODO Put it in a single Journal.org file, and like other files, keep data for one year only.
-      (setq qianmarv-org/gtd-path "~/Emacs/GTD/2018")
+      (setq qianmarv-org/gtd-path "~/Emacs/GTD")
       (setq qianmarv-org/journal-file (qianmarv-org/get-monthly))
       (setq org-capture-templates
             `(("t" "Todo" entry (file+headline ,(format "%s/Inbox.org" qianmarv-org/gtd-path ) "Tasks")
                "* %?\n %i\n")
               ("j" "Morning Write" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry)
-               "* Morning Write \n\t%T\n\t%?")
+               "* Morning Write \n\t%U\n\t%?")
               ("m" "Memo" plain (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry-notes)
-               "\t-----\n\t@%T\n\t%a\n%?" :empty-lines 1)
+               "\t-----\n\t@%U\n\t%a\n%?" :empty-lines 1)
               ("d" "Daily Review" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry)
-               "* Daily Review\n%T\n%?")
+               "* Daily Review\n%U\n%?")
               ("o" "Other" entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Other Interrupt")
                "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
-              ("n" "Notes" plain (clock) "\n\tNotes@%T: %?" )))
+              ("n" "Notes" plain (clock) "\n\tNotes@%U: %?" )))
 
       (setq org-agenda-files
             `(

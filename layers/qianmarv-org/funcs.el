@@ -93,7 +93,7 @@ if the folder is not exists, will create accordingly!"
        "Target buffer \"%s\" for file+headline should be in Org mode"
        (current-buffer)))
     (if (re-search-forward
-         (format org-complex-heading-regexp-format notes)
+         (format org-complex-heading-regexp-format notes-title)
          nil t)
         (goto-char (point-at-eol))
       (goto-char (point-max))

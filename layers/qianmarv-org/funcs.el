@@ -115,13 +115,15 @@ same directory as the org-buffer and insert a link to this file."
   (if (not (file-exists-p foldername))
       (mkdir foldername))
                                         ;convert bitmap from clipboard to file
+  ;;https://imagemagick.org/script/download.php
   (if (eq system-type 'windows-nt)
-      ;; There's also another convert.exe which is out-of-box program in windows/system32
-      ;; Thus rename the convert name
-      (call-process "ImageMagick_convert" nil nil nil "clipboard:" fullfilename))
+      (call-process "magick" nil nil nil  "clipboard:" fullfilename))
                                         ; insert into file if correctly taken
   (if (file-exists-p fullfilename)
-      (insert (message "[[./%s/%s]]" subfolder filename))))
+      (progn
+        (insert (message "#+CAPTION: %s" (read-from-minibuffer "Caption: ")))
+        (indent-new-comment-line)
+        (insert (message "[[./%s/%s]]" subfolder filename)))))
 
 (defun qianmarv-org/insert-src-block (src-code-type)
   "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
@@ -140,6 +142,19 @@ same directory as the org-buffer and insert a link to this file."
     (insert "#+END_SRC\n")
     (previous-line 2)
     (org-edit-src-code)))
+
+(defun qianmarv-org/insert-quote (quote-format)
+    "Insert quote"
+  (interactive
+   (let ((quote-formats
+          '("VERSE" "QUOTE" "CENTER")))
+     (list (ido-completing-read "Quote Format: " quote-formats))))
+  (progn
+    (newline-and-indent)
+    (insert (format "#+BEGIN_%s\n" quote-format))
+    (newline-and-indent)
+    (insert "#+END_%s\n" quote-format)
+    (previous-line 2)))
 
 
 ;; Credit to https://emacs.stackexchange.com/questions/21713/how-to-get-property-values-from-org-file-headers

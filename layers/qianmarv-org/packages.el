@@ -95,6 +95,7 @@
       (spacemacs/set-leader-keys-for-major-mode 'org-mode
         "," 'org-priority
         "ir" 'qianmarv-org/insert-src-block
+        "iq" 'qianmarv-org/insert-quote
         "ip" 'qianmarv-org/insert-screenshot)
       (require 'org-compat)
       (require 'org)
@@ -200,7 +201,7 @@
               ,(format "%s/Projects.org" qianmarv-org/gtd-path)
               ,(format "%s/Event.org" qianmarv-org/gtd-path)
               ,(format "%s/Agenda.org" qianmarv-org/gtd-path)
-              ,(format "%s/Calendar.org" qianmarv-org/gtd-path)
+              ,(format "%s/Inbox.org" qianmarv-org/gtd-path)
               ,(format "%s/Habit.org" qianmarv-org/gtd-path)
               ))
       ;;      (spacemacs/set-leader-keys "'" 'qianmarv-org/insert-screenshot)

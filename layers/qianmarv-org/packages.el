@@ -26,6 +26,8 @@
     (setq org-super-agenda-groups
           '((:name "Log "
                    :log t)
+            (:name "Current Focus "
+                   :todo "STARTED")
             (:name "Schedule "
                    :time-grid t)
             (:name "Today "
@@ -38,9 +40,6 @@
                    :deadline past)
             (:name "Due soon "
                    :deadline future)
-            (:name "Waiting "
-                   :todo "WAIT"
-                   :order 98)
             (:name "Scheduled earlier "
                    :scheduled past)))
     (org-super-agenda-mode)))
@@ -162,6 +161,55 @@
       (setq org-ditaa-jar-path
             (expand-file-name "~/.spacemacs.d/plugins/ditaa0_9.jar")) ;
 
+      ;; Setup for GTD
+      ;; Refer to http://www.i3s.unice.fr/~malapert/org/tips/emacs_orgmode.html
+      (setq org-todo-keywords
+            '(
+              (sequence "IDEA(i)" "TODO(t)" "STARTED(s)" "NEXT(n)" "WAITING(w)" "|" "DONE(d)")
+              (sequence "|" "CANCELED(c)" "DELEGATED(l)" "SOMEDAY(f)")
+              ))
+
+      (setq org-todo-keyword-faces
+            '(("IDEA" . (:foreground "GoldenRod" :weight bold))
+              ("NEXT" . (:foreground "IndianRed1" :weight bold))   
+              ("STARTED" . (:foreground "OrangeRed" :weight bold))
+              ("WAITING" . (:foreground "coral" :weight bold)) 
+              ("CANCELED" . (:foreground "LimeGreen" :weight bold))
+              ("DELEGATED" . (:foreground "LimeGreen" :weight bold))
+              ("SOMEDAY" . (:foreground "LimeGreen" :weight bold))
+              ))
+
+      ;; (setq org-tag-persistent-alist
+      ;;       '((:startgroup . nil)
+      ;;         ("HOME" . ?h)
+      ;;         ("OFFICE" . ?r)
+      ;;         ("OUTSIDE" . ?t)
+      ;;         (:endgroup . nil)
+      ;;         (:startgroup . nil)
+      ;;         ("EASY" . ?e)
+      ;;         ("MEDIUM" . ?m)
+      ;;         ("HARD" . ?a)
+      ;;         (:endgroup . nil)
+      ;;         ("URGENT" . ?u)
+      ;;         ("KEY" . ?k)
+      ;;         ("BONUS" . ?b)
+      ;;         )
+      ;;       )
+
+      ;; (setq org-tag-faces
+      ;;       '(
+      ;;         ("HOME" . (:foreground "GoldenRod" :weight bold))
+      ;;         ("OFFICE" . (:foreground "GoldenRod" :weight bold))
+      ;;         ("OUTSIDE" . (:foreground "GoldenRod" :weight bold))
+      ;;         ("URGENT" . (:foreground "Red" :weight bold))
+      ;;         ("KEY" . (:foreground "Red" :weight bold))
+      ;;         ("EASY" . (:foreground "OrangeRed" :weight bold))
+      ;;         ("MEDIUM" . (:foreground "OrangeRed" :weight bold))
+      ;;         ("HARD" . (:foreground "OrangeRed" :weight bold))
+      ;;         ("BONUS" . (:foreground "GoldenRod" :weight bold))
+      ;;         )
+      ;;       )
+      (setq org-enable-priority-commands nil)
       ;; --------------------------------------------------------------------
       ;; Encypting files or org
       ;; https://orgmode.org/worg/org-tutorials/encrypting-files.html
@@ -184,26 +232,33 @@
       (setq qianmarv-org/gtd-path "~/Emacs/GTD")
       (setq qianmarv-org/journal-file (qianmarv-org/get-monthly))
       (setq org-capture-templates
-            `(("t" "Todo" entry (file+headline ,(format "%s/Inbox.org" qianmarv-org/gtd-path ) "Tasks")
-               "* %?\n %i\n")
-              ("j" "Morning Write" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry)
+            `(("c" "Collect/Capture")
+              ("ci" "Capture Ideas/Mighty new todos" entry (file+headline ,(format "%s/Inbox.org" qianmarv-org/gtd-path ) "Ideas") "* IDEA %?\n %i\n")
+              ("cb" "Books want Read" entry (file+headline ,(format "%s/Inbox.org" qianmarv-org/gtd-path ) "Books") (file "~/Emacs/GTD/templates/book.tpl"))
+              ("cm" "Moviews want Watch" entry (file+headline ,(format "%s/Inbox.org" qianmarv-org/gtd-path ) "Movie") "* IDEA %?\n %i\n")
+              ("cj" "Journals, Morning Write" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry)
                "* Morning Write \n\t%U\n\t%?")
-              ("m" "Memo" plain (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry-notes)
-               "\t-----\n\t@%U\n\t%a\n%?" :empty-lines 1)
-              ("d" "Daily Review" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry)
-               "* Daily Review\n%U\n%?")
-              ("o" "Other" entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Other Interrupt")
-               "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
-              ("n" "Notes" plain (clock) "\n\tNotes@%U: %?" )))
-
-      (setq org-agenda-files
-            `(
-              ,(format "%s/Projects.org" qianmarv-org/gtd-path)
-              ,(format "%s/Event.org" qianmarv-org/gtd-path)
-              ,(format "%s/Agenda.org" qianmarv-org/gtd-path)
-              ,(format "%s/Inbox.org" qianmarv-org/gtd-path)
-              ,(format "%s/Habit.org" qianmarv-org/gtd-path)
+              ("cn" "Take Notes" plain (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry-notes) "- Note taken on %U \\\\\n  %?" :empty-lines 1)
+              ("b" "Break / Unplanned Interrupt")
+              ("bi" "Other Interrupt - Requires Refile" entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Other Interrupts") "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
+              ("bp" "Phone Calls" entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Phone Calls") "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
+              ("bs" "Someone Inquiry" entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Someone Inquiry") "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
+              ("bb" "Breaks, Tea Break / WC / etc..." entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Short Break") "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
+              ("r" "Review")
+              ("rd" "Daily Review" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry) (file "~/Emacs/GTD/templates/daily_review.tpl"))
+              ("rw" "Weekly Review" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry) "* Weekly Review\n%U\n%?")
+              ("rm" "Month Review" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry) "* Monthly Review\n%U\n%?")
               ))
+
+      (setq org-agenda-files  `(,qianmarv-org/gtd-path))
+      (setq org-agenda-compact-blocks nil)
+            ;; `(
+            ;;   ,(format "%s/Projects.org" qianmarv-org/gtd-path)
+            ;;   ,(format "%s/Event.org" qianmarv-org/gtd-path)
+            ;;   ,(format "%s/Agenda.org" qianmarv-org/gtd-path)
+            ;;   ,(format "%s/Inbox.org" qianmarv-org/gtd-path)
+            ;;   ,(format "%s/Habit.org" qianmarv-org/gtd-path)
+            ;;   ))
       ;;      (spacemacs/set-leader-keys "'" 'qianmarv-org/insert-screenshot)
 
       ;; --------------------------------------------------------------------

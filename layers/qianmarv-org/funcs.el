@@ -95,7 +95,9 @@ if the folder is not exists, will create accordingly!"
     (if (re-search-forward
          (format org-complex-heading-regexp-format notes-title)
          nil t)
-        (goto-char (point-at-eol))
+        (progn
+          (org-narrow-to-subtree)
+          (goto-char (point-max)))
       (goto-char (point-max))
       (or (bolp) (insert "\n"))
       (insert "*** " notes-title)

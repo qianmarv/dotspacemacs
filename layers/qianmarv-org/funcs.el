@@ -114,6 +114,32 @@ if the folder is not exists, will create accordingly!"
       (goto-char (point-at-eol))
       )))
 
+;; (defun qianmarv-org/find-event-entry-fix-break()
+;;   (let ((entry-name "Track Fixed Break for Tea/WC"))
+;;     (qianmarv-org/find-h1 "Short Break")
+;;     (unless (derived-mode-p 'org-mode)
+;;       (error
+;;        "Target buffer \"%s\" for file+headline should be in Org mode"
+;;        (current-buffer)))
+;;     (if (re-search-forward
+;;          (format org-complex-heading-regexp-format entry-name)
+;;          nil t)
+;;         (progn
+;;           (org-narrow-to-subtree)
+;;           (goto-char (point-max)))
+;;       (goto-char (point-max))
+;;       (or (bolp) (insert "\n"))
+;;       (insert "** " entry-name)
+;;       (goto-char (point-at-eol)))))
+(defun org-insert-clock-range (&optional n)
+  (interactive "NTime Offset (in min): ")
+  (let* ((ctime (cdr (decode-time (current-time))))
+         (min (car ctime))
+         (start (apply 'encode-time 0 (- min n) (cdr ctime))))
+    (org-insert-time-stamp start t t "CLOCK: ")
+    (insert "--")
+    (org-insert-time-stamp (current-time) t t)))
+
 (defun qianmarv-org/insert-screenshot ()
   "Take a screenshot into a time stamped unique-named file in the
 same directory as the org-buffer and insert a link to this file."
@@ -156,7 +182,7 @@ same directory as the org-buffer and insert a link to this file."
     (org-edit-src-code)))
 
 (defun qianmarv-org/insert-quote (quote-format)
-    "Insert quote"
+  "Insert quote"
   (interactive
    (let ((quote-formats
           '("VERSE" "QUOTE" "CENTER")))

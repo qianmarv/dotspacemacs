@@ -201,11 +201,12 @@
               ("G@2019_EfficientWork" . (:foreground "GoldenRod" :weight bold))
               ("G@2019_DevExpert" . (:foreground "GoldenRod" :weight bold))
               ("G@2019_BizExpert" . (:foreground "GoldenRod" :weight bold))
-              ;; ("URGENT" . (:foreground "Red" :weight bold))
-              ;; ("KEY" . (:foreground "Red" :weight bold))
-              ;; ("EASY" . (:foreground "OrangeRed" :weight bold))
-              ;; ("MEDIUM" . (:foreground "OrangeRed" :weight bold))
-              ;; ("HARD" . (:foreground "OrangeRed" :weight bold))
+              ("G@2019_MSE2020" . (:foreground "Red" :weight bold))
+              ("G@2019_SelfMastery" . (:foreground "Red" :weight bold))
+              ("@2019_Emacsen" . (:foreground "Red" :weight bold))
+              ("@2019_Health" . (:foreground "OrangeRed" :weight bold))
+              ("G@2019_Education" . (:foreground "OrangeRed" :weight bold))
+              ("G@2019_Trip" . (:foreground "OrangeRed" :weight bold))
               ;; ("BONUS" . (:foreground "GoldenRod" :weight bold))
               )
             )
@@ -227,7 +228,7 @@
       (setq org-crypt-key nil)
 
 
-
+      ;;
       ;;FIXME If the Emacs keep open then the file name would be not correct if passes one month!
       ;;TODO Put it in a single Journal.org file, and like other files, keep data for one year only.
       (setq qianmarv-org/gtd-path "~/Emacs/GTD")

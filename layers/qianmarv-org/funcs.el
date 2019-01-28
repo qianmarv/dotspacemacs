@@ -85,6 +85,16 @@ if the folder is not exists, will create accordingly!"
       ;; (beginning-of-line 0))
       )))
 
+;; (defun qianmarv-org/find-track-entry-books()
+;;   (progn
+;;     (qianmarv-org/find-h1 "Reading")
+;;     ;; (org-narrow-to-subtree )
+;;     (helm-org-in-buffer-headings)))
+;; (defun qianmarv-org/track-reading()
+;;   (interactive)
+;;   (let ((track-file "~/Emacs/Notebooks/005_Book.org"))
+;;     ))
+
 (defun qianmarv-org/find-date-entry-notes()
   (let ((notes-title "Memo"))
     (qianmarv-org/find-date-entry)

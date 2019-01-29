@@ -64,6 +64,11 @@ if the folder is not exists, will create accordingly!"
         ;; (goto-char (point-at-bol))
         ))))
 
+(defun qianmarv-org/find-week-entry()
+  (progn
+    (qianmarv-org/find-h1 "Weekly Review")
+      (goto-char (point-at-bol))))
+
 (defun qianmarv-org/find-date-entry()
   (progn
     ;; (goto-char (point-min))

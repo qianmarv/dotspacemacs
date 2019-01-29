@@ -240,7 +240,7 @@
               ("cm" "Moviews want Watch" entry (file+headline ,(format "%s/Inbox.org" qianmarv-org/gtd-path ) "Movie") "* IDEA %?\n %i\n")
               ("cj" "Journals, Morning Write" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry)
                "* Morning Write \n\t%U\n\t%?")
-              ("cn" "Take Notes" plain (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry-notes) "- Note taken on %U \\\\\n  %K  \n%?" :empty-lines 1)
+              ("cn" "Take Notes" item (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry-notes) "Note taken on %U \\\\\n%?\n%K " :empty-lines 1)
               ("b" "Break / Unplanned Interrupt")
               ("bi" "Other Interrupt - Requires Refile" entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Other Interrupts") "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
               ("bp" "Phone Calls" entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Phone Calls") "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)

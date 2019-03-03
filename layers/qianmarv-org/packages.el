@@ -207,6 +207,7 @@
               ("@2019_Health" . (:foreground "OrangeRed" :weight bold))
               ("G@2019_Education" . (:foreground "OrangeRed" :weight bold))
               ("G@2019_Trip" . (:foreground "OrangeRed" :weight bold))
+	      ("G@2019_Decorate" . (:foreground "OrangeRed" :weight bold))
               ;; ("BONUS" . (:foreground "GoldenRod" :weight bold))
               )
             )
@@ -228,31 +229,94 @@
       (setq org-crypt-key nil)
 
 
+      (setq qianmarv/gtd-directory "~/Org/GTD")
+
+      (defmacro qianmarv/expand-template (name)
+        "Expand template NAME to full path."
+        (concat qianmarv/gtd-directory "/templates/" name ".tpl"))
+
+      (defun qianmarv/make-notebook (name)
+        "Make notebook NAME to full path.
+TODO create the notebook if NOT exist."
+        (concat qianmarv/gtd-directory "/" name ".org"))
+
+(let* ((journal-book (qianmarv/make-notebook "Journal"))
+       (inbox-book (qianmarv/make-notebook "Inbox"))
+       (capture-book (qianmarv/make-notebook "Event"))
+       (agenda-book (qianmarv/make-notebook "Agenda"))
+       (project-book (qianmarv/make-notebook "Projects")))
+
+  (setq org-capture-templates
+        `(
+          ("j" "Journals, Morning Write" entry
+           (file+olp+datetree ,journal-book) "* Morning Write\n%U\n%?" :tree-type week)
+          ("b" "Break / Interrupt" entry
+           (file+headline ,capture-book "Other Interrupts") "* DONE %?\n%U %i\n" :clock-in t :clock-resume t)
+          ("c" "Collect/Capture")
+          ("cn" "Take Notes" entry
+           (file+headline ,capture-book "Notes") "* %^{Note Title}\nNote taken on %U \\\\\n%?\n%K")
+          ("ci" "Capture Ideas/Mighty new todos" entry
+           (file+headline ,capture-book "Ideas")  "* TODO %?\n %i\n")
+          ("cb" "Books want Read" entry
+           (file+headline ,capture-book "Books") (file ,(qianmarv/expand-template "book")))
+          ("cm" "Movies want Watch" entry
+           (file+headline ,capture-book "Movies") (file ,(qianmarv/expand-template "movie")))
+          ("r" "Review")
+          ("rd" "Daily Review"  entry
+           (file+olp+datetree ,journal-book) (file ,(qianmarv/expand-template "daily_review")) :tree-type week :time-prompt t)
+          ("rw" "Weekly Review"  entry
+           (file+olp+datetree ,journal-book) (file ,(qianmarv/expand-template "weekly_review")) :tree-type week :time-prompt t)
+          ("rm" "Monthly Review"  entry
+           (file+olp+datetree ,journal-book) (file ,(qianmarv/expand-template "monthly_review")) :tree-type week :time-prompt t)))
+  ;; (setq org-agenda-files (directory-files qianmarv/gtd-directory "\.org$"))
+  ;; (setq org-agenda-files `(,journal-book
+  ;;                          ,inbox-book
+  ;;                          ,capture-book
+  ;;                          ,agenda-book
+  ;;                          ,project-book))
+  )      
+
+;;; Show the clocked-in task - if any - in the header line
+(defun qianmarv/show-org-clock-in-header-line ()
+  (setq-default header-line-format '((" " org-mode-line-string " "))))
+
+(defun qianmarv/hide-org-clock-from-header-line ()
+  (setq-default header-line-format nil))
+
+(add-hook 'org-clock-in-hook 'qianmarv/show-org-clock-in-header-line)
+(add-hook 'org-clock-out-hook 'qianmarv/hide-org-clock-from-header-line)
+(add-hook 'org-clock-cancel-hook 'qianmarv/hide-org-clock-from-header-line)
+
+;; (after-load 'org-clock
+            (define-key org-clock-mode-line-map [header-line mouse-2] 'org-clock-goto)
+            (define-key org-clock-mode-line-map [header-line mouse-1] 'org-clock-menu)
+            ;; )
+
       ;;
       ;;FIXME If the Emacs keep open then the file name would be not correct if passes one month!
       ;;TODO Put it in a single Journal.org file, and like other files, keep data for one year only.
-      (setq qianmarv-org/gtd-path "~/Emacs/GTD")
-      (setq qianmarv-org/journal-file (qianmarv-org/get-monthly))
-      (setq org-capture-templates
-            `(("c" "Collect/Capture")
-              ("ci" "Capture Ideas/Mighty new todos" entry (file+headline ,(format "%s/Inbox.org" qianmarv-org/gtd-path ) "Ideas") "* IDEA %?\n %i\n")
-              ("cb" "Books want Read" entry (file+headline ,(format "%s/Inbox.org" qianmarv-org/gtd-path ) "Books") (file "~/Emacs/GTD/templates/book.tpl"))
-              ("cm" "Moviews want Watch" entry (file+headline ,(format "%s/Inbox.org" qianmarv-org/gtd-path ) "Movie") "* IDEA %?\n %i\n")
-              ("cj" "Journals, Morning Write" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry)
-               "* Morning Write \n\t%U\n\t%?")
-              ("cn" "Take Notes" item (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry-notes) "Note taken on %U \\\\\n%?\n%K " :empty-lines 1)
-              ("b" "Break / Unplanned Interrupt")
-              ("bi" "Other Interrupt - Requires Refile" entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Other Interrupts") "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
-              ("bp" "Phone Calls" entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Phone Calls") "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
-              ("bs" "Someone Inquiry" entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Someone Inquiry") "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
-              ("bb" "Breaks, Tea Break / WC / etc..." entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Short Break") "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
-              ("r" "Review")
-              ("rd" "Daily Review"  entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry) (file "~/Emacs/GTD/templates/daily_review.tpl"))
-              ("rw" "Weekly Review" entry (file+function qianmarv-org/journal-file qianmarv-org/find-week-entry) (file "~/Emacs/GTD/templates/weekly_review.tpl"))
-              ("rm" "Month Review" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry) "* Monthly Review\n%U\n%?")
-              ))
+      ;; (setq qianmarv-org/gtd-path "~/Org/GTD")
+      ;; (setq qianmarv-org/journal-file (qianmarv-org/get-monthly))
+      ;; (setq org-capture-templates
+      ;;       `(("c" "Collect/Capture")
+      ;;         ("ci" "Capture Ideas/Mighty new todos" entry (file+headline ,(format "%s/Inbox.org" qianmarv-org/gtd-path ) "Ideas") "* IDEA %?\n %i\n")
+      ;;         ("cb" "Books want Read" entry (file+headline ,(format "%s/Inbox.org" qianmarv-org/gtd-path ) "Books") (file "~/Emacs/GTD/templates/book.tpl"))
+      ;;         ("cm" "Moviews want Watch" entry (file+headline ,(format "%s/Inbox.org" qianmarv-org/gtd-path ) "Movie") "* IDEA %?\n %i\n")
+      ;;         ("cj" "Journals, Morning Write" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry)
+      ;;          "* Morning Write \n\t%U\n\t%?")
+      ;;         ("cn" "Take Notes" item (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry-notes) "Note taken on %U \\\\\n%?\n%K " :empty-lines 1)
+      ;;         ("b" "Break / Unplanned Interrupt")
+      ;;         ("bi" "Other Interrupt - Requires Refile" entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Other Interrupts") "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
+      ;;         ("bp" "Phone Calls" entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Phone Calls") "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
+      ;;         ("bs" "Someone Inquiry" entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Someone Inquiry") "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
+      ;;         ("bb" "Breaks, Tea Break / WC / etc..." entry (file+headline ,(format "%s/Event.org" qianmarv-org/gtd-path ) "Short Break") "* DONE %? \n%U %i\n" :clock-in t :clock-resume t)
+      ;;         ("r" "Review")
+      ;;         ("rd" "Daily Review"  entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry) (file "~/Emacs/GTD/templates/daily_review.tpl"))
+      ;;         ("rw" "Weekly Review" entry (file+function qianmarv-org/journal-file qianmarv-org/find-week-entry) (file "~/Emacs/GTD/templates/weekly_review.tpl"))
+      ;;         ("rm" "Month Review" entry (file+function qianmarv-org/journal-file qianmarv-org/find-date-entry) "* Monthly Review\n%U\n%?")
+      ;;         ))
 
-      (setq org-agenda-files  `(,qianmarv-org/gtd-path))
+      ;; (setq org-agenda-files  `(,qianmarv-org/gtd-path))
       (setq org-agenda-compact-blocks nil)
             ;; `(
             ;;   ,(format "%s/Projects.org" qianmarv-org/gtd-path)
@@ -262,7 +326,9 @@
             ;;   ,(format "%s/Habit.org" qianmarv-org/gtd-path)
             ;;   ))
       ;;      (spacemacs/set-leader-keys "'" 'qianmarv-org/insert-screenshot)
-
+      ;; Re-align tags when window shape changes
+      (add-hook 'org-agenda-mode-hook
+                (lambda () (add-hook 'window-configuration-change-hook 'org-agenda-align-tags nil t)))
       ;; --------------------------------------------------------------------
       ;; Settings for Reminder - appt
       ;; Refer to: https://emacs.stackexchange.com/questions/3844/good-methods-for-setting-up-alarms-audio-visual-triggered-by-org-mode-events

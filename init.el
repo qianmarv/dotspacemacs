@@ -154,8 +154,8 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(solarized-light
-                         solarized-dark
+   dotspacemacs-themes '(solarized-dark
+                         solarized-light
                          spacemacs-dark
                          spacemacs-light)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
@@ -359,7 +359,7 @@ values."
  '(js-indent-level 2)
  '(org-agenda-files
    (quote
-    ("~/Emacs/GTD/Projects.org" "~/Emacs/GTD/Event.org" "~/Emacs/GTD/Agenda.org" "~/Emacs/GTD/Habit.org")))
+    ("~/Org/GTD/Work.org" "~/Org/GTD/Projects.org" "~/Org/GTD/Journal.org" "~/Org/GTD/Inbox.org" "~/Org/GTD/Habit.org" "~/Org/GTD/Event.org" "~/Org/GTD/Agenda.org")))
  '(package-selected-packages
    (quote
     (rainbow-mode rainbow-identifiers color-identifiers-mode flycheck-pos-tip plantuml-mode tablist youdao-dictionary names chinese-word-at-point pos-tip fcitx pyim pyim-basedict nov esxml xml+ cnfonts org-mime org-super-agenda ht tide typescript-mode flycheck abap helm-company company-web web-completion-data company-tern company-statistics company-anaconda ac-ispell helm-c-yasnippet fuzzy company auto-yasnippet auto-complete yaml-mode abap-mode sap-abap-mode mmm-mode markdown-toc markdown-mode gh-md yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic ahk-mode pangu-spacing find-by-pinyin-dired ace-pinyin pinyinlib pdf-tools deft excorporate url-http-ntlm soap-client fsm ntlm geiser racket-mode faceup web-beautify tern livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc coffee-mode restclient org-jira web-mode unfill tagedit slim-mode scss-mode sass-mode pug-mode mwim less-css-mode helm-css-scss haml-mode emmet-mode sicp smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-download magit-gitflow htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bind-key auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))

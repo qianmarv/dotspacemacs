@@ -32,9 +32,8 @@ values."
    dotspacemacs-configuration-layers
    '(
      markdown
-     ;; markdown
      python
-     autohotkey
+     ;; autohotkey
      colors
      (javascript :variables js2-basic-offset 2)
      typescript
@@ -50,14 +49,13 @@ values."
      html
      git
      plantuml
-     ;; markdown
      (chinese :variables
               chinese-enable-fcitx t
               chinese-enable-youdao-dict t
               )
-     deft
+     ;; deft
      yaml
-     pdf-tools
+     ;; pdf-tools
      org
      ;; racket
      ;; scheme

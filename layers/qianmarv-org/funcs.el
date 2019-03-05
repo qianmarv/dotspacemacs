@@ -196,7 +196,7 @@ same directory as the org-buffer and insert a link to this file."
     (newline-and-indent)
     (insert (format "#+BEGIN_%s\n" quote-format))
     (newline-and-indent)
-    (insert "#+END_%s\n" quote-format)
+    (insert (format "#+END_%s\n" quote-format))
     (previous-line 2)))
 
 

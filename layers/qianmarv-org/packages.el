@@ -372,4 +372,24 @@ k     ;;           (lambda ()
       ;; (add-hook 'org-pomodoro-killed-hook
       ;;           (lambda ()
       ;;             (qianmarv-org/show-alarm 0 0 "Pomodoro Killed - One does not simply kill a pomodoro!")))
+      ;; Setup Publish
+(setq org-publish-project-alist
+      `(
+        ("Blog-Note"
+         :base-directory "~/Org/Blog/"
+         :recursive t
+         :publishing-directory "~/Git/blog/source/_posts/"
+         :publishing-function org-md-publish-to-md)
+        ("Blog-Static"
+         :base-directory "~/Org/Blog/"
+         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+         :publishing-directory "~/Git/blog/source/_posts/"
+         :recursive t
+         :publishing-function org-publish-attachment)
+        ("Blog" :components ("Blog-Note" "Blog-Static"))))
+
+;; Publish with
+(org-publish-current-project) ;; While having a file in your project open
+;; OR
+;; M-x org-publish <RET> project-name <RET>
       )))

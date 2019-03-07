@@ -275,8 +275,7 @@
         (concat qianmarv/gtd-directory "/templates/" name ".tpl"))
 
       (defun qianmarv/make-notebook (name)
-        "Make notebook NAME to full path.
-TODO create the notebook if NOT exist."
+        "Make notebook NAME to full path. TODO create the notebook if NOT exist."
         (concat qianmarv/gtd-directory "/" name ".org"))
 
 (let* ((journal-book (qianmarv/make-notebook "Journal"))
@@ -362,7 +361,7 @@ TODO create the notebook if NOT exist."
       ;;             (qianmarv-org/show-alarm 0 0 "Pomodoro completed! - Time for a break.")))
 
       ;; (add-hook 'org-pomodoro-break-finished-hook
-k     ;;           (lambda ()
+      ;;           (lambda ()
       ;;             (qianmarv-org/show-alarm 0 0 "Pomodoro Short Break Finished - Ready for Another?")))
 
       ;; (add-hook 'org-pomodoro-long-break-finished-hook

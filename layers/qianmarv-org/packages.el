@@ -388,7 +388,7 @@
         ("Blog" :components ("Blog-Note" "Blog-Static"))))
 
 ;; Publish with
-(org-publish-current-project) ;; While having a file in your project open
+;; (org-publish-current-project) ;; While having a file in your project open
 ;; OR
 ;; M-x org-publish <RET> project-name <RET>
       )))

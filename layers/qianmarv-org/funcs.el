@@ -150,23 +150,27 @@ if the folder is not exists, will create accordingly!"
 same directory as the org-buffer and insert a link to this file."
   (interactive)
   ;; (org-display-inline-images)
-  (setq foldername (replace-regexp-in-string "\.org" "" (buffer-file-name))
-        ;; foldername (concat (file-name-directory (buffer-file-name)) "img/")
-        subfolder (replace-regexp-in-string "\.org" "" (file-name-nondirectory (buffer-file-name)))
-        filename (format-time-string "%Y%m%d_%H%M%S.png")
-        fullfilename (concat foldername "/" filename ))
-  (if (not (file-exists-p foldername))
-      (mkdir foldername))
-                                        ;convert bitmap from clipboard to file
-  ;;https://imagemagick.org/script/download.php
-  (if (eq system-type 'windows-nt)
-      (call-process "magick" nil nil nil  "clipboard:" fullfilename))
-                                        ; insert into file if correctly taken
-  (if (file-exists-p fullfilename)
-      (progn
-        (insert (message "#+CAPTION: %s" (read-from-minibuffer "Caption: ")))
-        (indent-new-comment-line)
-        (insert (message "[[./%s/%s]]" subfolder filename)))))
+  (let*
+      ;; foldername (replace-regexp-in-string "\.org" "" (buffer-file-name))
+      ((image-folder "IMG")
+       (image-name (format-time-string "%Y%m%d_%H%M%S.png"))
+       (parent-directory (file-name-directory (buffer-file-name)))
+       ;; subfolder (replace-regexp-in-string "\.org" "" (file-name-nondirectory (buffer-file-name)))
+       (relative-image-path  (concat "./" image-folder "/" image-name))
+       (full-image-directory (concat parent-directory "/" image-folder))
+       (full-image-path (concat full-image-directory "/" image-name)))
+    (if (not (file-exists-p full-image-directory))
+        (mkdir full-image-directory))
+    ;;convert bitmap from clipboard to file
+    ;;https://imagemagick.org/script/download.php
+    (if (eq system-type 'windows-nt)
+        (call-process "magick" nil nil nil  "clipboard:" full-image-path))
+    ;; insert into file if correctly taken
+    (if (file-exists-p full-image-path)
+        (progn
+          (insert (message "#+CAPTION: %s" (read-from-minibuffer "Caption: ")))
+          (indent-new-comment-line)
+          (insert (message "[[./%s/%s]]" image-folder image-name))))))
 
 (defun qianmarv-org/insert-src-block (src-code-type)
   "Insert a `SRC-CODE-TYPE' type source code block in org-mode."

@@ -391,4 +391,10 @@
 ;; (org-publish-current-project) ;; While having a file in your project open
 ;; OR
 ;; M-x org-publish <RET> project-name <RET>
+
+(setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")))
+
+(setq org-agenda-include-diary t
+      diary-file (concat qianmarv/gtd-directory "/diary.org")
+      org-agenda-diary-file 'diary-file)
       )))

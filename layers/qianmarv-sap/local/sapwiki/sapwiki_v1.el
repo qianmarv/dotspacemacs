@@ -48,7 +48,6 @@
   :version "1.0"
   :package-version '(sapwiki . "1.0")
   :type 'string)
-
 (defcustom dk-sapwiki-fetch-url
   (concat dk-sapwiki-main-url "plugins/viewstorage/viewpagestorage.action")
   "The url used to fetch content from sapwiki"
@@ -89,16 +88,8 @@
   :package-version '(sapwiki . "1.0")
   :type 'string)
 
-(defcustom dk-sapwiki-link-url
-  (concat dk-sapwiki-main-url "pages/viewpage.action")
-  "The url used to updated the wikipage"
-  :group 'sapwiki
-  :version "1.0"
-  :package-version '(sapwiki . "1.0")
-  :type 'string)
-
 (defcustom dk-sapwiki-user
-  "i046147" "SAP i<number>"
+  "i074218" "SAP i<number>"
   :group 'sapwiki
   :version "1.0"
   :package-version '(sapwiki . "1.0")
@@ -113,15 +104,12 @@
 
 (defvar dk-sapwiki-pageID nil)
 (defvar dk-sapwiki-title nil)
-(defvar dk-sapwiki-title-link nil)
 (defvar dk-sapwiki-version-comment nil)
 (defvar dk-sapwiki-attachments nil)
 (defvar dk-sapwiki-attachment-comments nil)
 (defvar dk-sapwiki-current-page-version nil)
 (defvar dk-sapwiki-latest-page-version nil)
 (defvar dk-sapwiki-work-buffer nil)
-(defvar dk-sapwiki-block-auth nil
-  "Flag whether to block url.el's usual interactive authorisation procedure")
 
 (defun sapwiki-login (&optional callback)
   (interactive)
@@ -135,11 +123,11 @@
 
 (defun sapwiki-fetch ()
   (interactive)
-  (unless (dk-sapwiki-check-logged)
-    (sapwiki-login)
+  (unless (dk-sapwiki-check-login-successfully)
+    (dk-sapwiki-login)
     (return nil))
   (setq dk-sapwiki-pageID (dk-sapwiki-get-attribute-value "PAGEID"))
-  (setq dk-sapwiki-title (dk-sapwiki-get-title-literal))
+  (setq dk-sapwiki-title (dk-sapwiki-get-attribute-value "TITLE"))
 
   (message "Get the lastest version...")
   (dk-url-http-get
@@ -149,10 +137,10 @@
 
 (defun sapwiki-pull ()
   (interactive)
-  (unless (dk-sapwiki-check-logged)
-    (sapwiki-login))
+  (unless (dk-sapwiki-check-login-successfully)
+    (dk-sapwiki-login))
   (setq dk-sapwiki-pageID (dk-sapwiki-get-attribute-value "PAGEID"))
-  (setq dk-sapwiki-title (dk-sapwiki-get-title-literal))
+  (setq dk-sapwiki-title (dk-sapwiki-get-attribute-value "TITLE"))
   (setq dk-sapwiki-current-page-version (dk-sapwiki-get-attribute-value "VERSION"))
   
   (message "Get the lastest version number...")
@@ -170,19 +158,18 @@
 	 (dk-url-http-get
 	  dk-sapwiki-fetch-url 
 	  (list (cons "pageId" dk-sapwiki-pageID))
-	  'dk-sapwiki-ediff (list work-buffer))))
-     (list (current-buffer)))))
+	  'dk-sapwiki-ediff (list work-buffer)))))
+     (list (current-buffer))))
 
 (defun sapwiki-push (arg versionComment)
   (interactive "P\nsVersion Comment: ")
-  (setq dk-sapwiki-version-comment
-	(format "%s(pushed by emacs)" versionComment))
+  (setq dk-sapwiki-version-comment versionComment)
 
-  (unless (dk-sapwiki-check-logged)
-    (sapwiki-login))
+  (unless (dk-sapwiki-check-login-successfully)
+    (dk-sapwiki-login))
   
   (setq dk-sapwiki-pageID (dk-sapwiki-get-attribute-value "PAGEID"))
-  (setq dk-sapwiki-title (dk-sapwiki-get-title-literal))
+  (setq dk-sapwiki-title (dk-sapwiki-get-attribute-value "TITLE"))
   (setq dk-sapwiki-current-page-version (dk-sapwiki-get-attribute-value "VERSION"))
 
   (message "Get the lastest version...")
@@ -198,14 +185,14 @@
 	    'dk-extract-hidden-token (list work-buffer)))
        (message "Fetch the lastest version content, and do the comparing...")  
        (dk-url-http-get
-	dk-sapwiki-fetch-url 
+	dk-sapwiki-fetch-url
 	(list (cons "pageId" dk-sapwiki-pageID))
 	'dk-sapwiki-ediff (list work-buffer))))
    (list (current-buffer))))
 
 (defun dk-sapwiki-get-pageinfo (callback &optional cbargs)
   (dk-url-http-get
-   dk-sapwiki-info-url 
+   dk-sapwiki-info-url
    (list (cons "pageId" dk-sapwiki-pageID))
    (lambda (status callback cbargs)
      (set-buffer (current-buffer))
@@ -216,8 +203,8 @@
    (list callback cbargs)))
 
 (defun dk-url-http-get (url args callback &optional cbargs)
-  (let ((dk-sapwiki-block-auth t)
-	(url-request-method "GET")
+  (message "cbargs: %s" cbargs)
+  (let ((url-request-method "GET")
 	(query-string
 	 (mapconcat (lambda (arg)
 		      (concat (url-hexify-string (car arg))
@@ -230,8 +217,7 @@
 
 (defun dk-url-http-post (url args callback &optional cbargs)
       "Send ARGS to URL as a POST request."
-      (let ((dk-sapwiki-block-auth t)
-	    (url-request-method "POST")
+      (let ((url-request-method "POST")
             (url-request-extra-headers
              '(("Content-Type" . "application/x-www-form-urlencoded")))
             (url-request-data
@@ -247,8 +233,7 @@
       "Send FIELDS and FILES to URL as a multipart HTTP POST.
        fields is an alist, eg ((field-name . \"value\")); 
        files  is an a list of \(fieldname \"filename\" \"file MIME type\" \"file data\")*"
-      (let ((dk-sapwiki-block-auth t)
-	    (url-request-method "POST")
+      (let ((url-request-method "POST")
 	    (query-string
 	     (mapconcat (lambda (arg)
 			  (concat (url-hexify-string (car arg))
@@ -304,17 +289,10 @@
       (format "%s; charset=%s" content-type charset)
     content-type))
 
-(defun dk-sapwiki-check-logged ()
+(defun dk-sapwiki-check-login-successfully ( )
   (and (boundp 'url-cookie-secure-storage)
        (assoc "wiki.wdf.sap.corp" url-cookie-secure-storage)
        (aref (car (cdr (assoc "wiki.wdf.sap.corp" url-cookie-secure-storage))) 2)))
-
-(defun dk-sapwiki-check-login-successfully ()
-  (set-buffer (current-buffer))
-  (goto-char 1)
-  (if (re-search-forward "you are currently logged in as " nil t)
-      t
-    nil))
 
 (defun dk-sapwiki-get-attribute-value (attribute-name)
   (with-current-buffer (current-buffer)
@@ -324,15 +302,24 @@
       (if (re-search-forward search-string nil t)
 	  (buffer-substring (match-beginning 2) (match-end 2))
 	nil))))
+ 
+(defun dk-process-tr-kill-url-buffer (status)
+  "Kill the buffer returned by `url-retrieve'."
+  (kill-buffer (current-buffer)))
 
-(defun dk-sapwiki-get-title-literal ()
-  "Get the title literal string in case it is a link"
-  (setq dk-sapwiki-title-link (dk-sapwiki-get-attribute-value "TITLE"))
-  (if (string-match "\\(\\]\\[\\)\\([^\]]+\\)" dk-sapwiki-title-link)
-	(match-string 2 dk-sapwiki-title-link)
-      dk-sapwiki-title-link)
-  )
-				 
+(defun dk-switch-to-url-buffer (status)
+  "Switch to the buffer returned by `url-retreive'.
+    The buffer contains the raw HTTP response sent by the server."
+  (switch-to-buffer (current-buffer)))
+
+(defun dk-sapwiki-process-login (status &optional callback)
+  (if (dk-sapwiki-check-login-successfully)
+      (progn
+	(message "Login successfully")
+        (and (functionp callback)
+	     (apply callback)))
+    (user-error "Login failed")))
+
 (defun dk-sapwiki-fetch-internal (status)
   (message "Fetch Successfully, converting to org-mode...")
   (set-buffer (current-buffer))
@@ -401,20 +388,19 @@
 	   (cons "newSpaceKey" newSpaceKey))
      'dk-sapwiki-process-push (list work-buffer))
     
-    (dolist (comments-package dk-sapwiki-attachment-comments)
-	    (add-to-list 'comments-package
-			 (cons 'atl_token atl-token))
-	    (add-to-list 'comments-package
-			 (cons 'confirm "Attach") t)
-	    (dk-url-http-post-multipart
-	     dk-sapwiki-upload-url
-	     (list (cons "pageId"  dk-sapwiki-pageID))
-	     comments-package
-	     (pop dk-sapwiki-attachments)
-	     'dk-sapwiki-process-attchments))
+    (when dk-sapwiki-attachments
+      (add-to-list 'dk-sapwiki-attachment-comments
+		   (cons 'atl_token atl-token))
+      (add-to-list 'dk-sapwiki-attachment-comments
+		   (cons 'confirm "Attach") t)
+      (dk-url-http-post-multipart
+       dk-sapwiki-upload-url
+       (list (cons "pageId"  dk-sapwiki-pageID))
+       dk-sapwiki-attachment-comments
+       dk-sapwiki-attachments
+       'dk-sapwiki-process-attchments))
     
     (dk-increase-page-version work-buffer)
-    (dk-add-title-link work-buffer)
     (message "Pushed!")))
 
 (defun dk-increase-page-version (work-buffer)
@@ -424,13 +410,6 @@
 	dk-sapwiki-current-page-version)
   (dk-update-page-version work-buffer))
 
-(defun dk-add-title-link (work-buffer)
-  (unless (string-match "\\[\\[" dk-sapwiki-title-link)
-    (setq dk-sapwiki-title-link (concat "[[" dk-sapwiki-link-url
-					"?pageId=" dk-sapwiki-pageID
-					"][" dk-sapwiki-title "]]"))
-    (dk-update-page-title work-buffer)))
-    
 (defun dk-merged-with-latest-version ()
   (with-current-buffer result-org-buffer (erase-buffer))
   (setq dk-sapwiki-current-page-version dk-sapwiki-latest-page-version)
@@ -452,47 +431,22 @@
   (with-current-buffer work-buffer
     (goto-char 1)
     (if (re-search-forward "\\(+TITLE: \\)\\([^\n\r]+\\)" nil t)
-	(replace-match dk-sapwiki-title-link t nil nil 2)
+	(replace-match dk-sapwiki-title nil nil nil 2)
       (goto-char 1)
       (re-search-forward "+VERSION: [^\n\r]+")
       (insert ?\n)
-      (insert "#+TITLE: " dk-sapwiki-title-link))))
+      (insert "#+TITLE: " dk-sapwiki-title))))  
 
 (defun dk-sapwiki-process-push (status work-buffer)
   "The function is called only if post is not successfully"
   (switch-to-buffer (current-buffer))
   (message "Push Failed!"))
 
-(defun dk-sapwiki-process-attchments (status)
+(defun dk-sapwiki-process-attchments (status work-buffer)
   "The function is called only if post is not successfully"
   (switch-to-buffer (current-buffer))
   (message "Upload Attachments Failed!"))
 
-(defun dk-sapwiki-process-login (status &optional callback)
-  (if (dk-sapwiki-check-login-successfully)
-      (progn
-	(message "Login successfully")
-        (and (functionp callback)
-	     (apply callback)))
-    (setq dk-sapwiki-pwd nil)
-    (user-error "Login failed")))
-
-(defun dk-process-tr-kill-url-buffer (status)
-  "Kill the buffer returned by `url-retrieve'."
-  (kill-buffer (current-buffer)))
-
-(defun dk-switch-to-url-buffer (status)
-  "Switch to the buffer returned by `url-retreive'.
-    The buffer contains the raw HTTP response sent by the server."
-  (switch-to-buffer (current-buffer)))
-
-(defun dk-sapwiki-handle-authentication (orig-fun &rest args)
-  (if dk-sapwiki-block-auth
-      (message "User is not logged in, or session is timeout!")
-    (apply orig-fun args)))
-
-(advice-add 'url-http-handle-authentication
-	    :around #'dk-sapwiki-handle-authentication)
 ;;------------------------------------------------------
 ;;End of 1. Connect to SAP wiki, uploading/downloading
 ;;------------------------------------------------------
@@ -563,7 +517,6 @@
       ("&gt;" (replace-match ">"))
       ("&lt;" (replace-match "<"))
       ("&nbsp;" (replace-match " "))
-      ("&#xa0;" (replace-match " "))
       ("&amp;" (replace-match "&")))))
       
 (defun dk-process-in-line-ele ()
@@ -588,7 +541,7 @@
   ;; remove whitesapces
   (goto-char (point-min))
   (while (re-search-forward "[\t\r\n]+" nil t)
-    (replace-match ""))
+    (replace-match "" nil nil))
   ;; re-add line break for //
   (goto-char (point-min))
   (while (re-search-forward "\\\\\\{2\\}" nil t)
@@ -598,12 +551,9 @@
   (dk-process-in-line-ele)
   (goto-char 1)
   ;; Remove headline numberring, org-mode doesn't need it
-  (when (re-search-forward "\\([0-9]+[.]*\\)+\s" nil t)
+  (when
+      (re-search-forward "\\([0-9]+[.]*\\)+\s" nil t)
     (replace-match "" nil nil))
-  ;; Replace :: to : in case there are tags
-  (goto-char 1)
-  (while (re-search-forward ": :" nil t)
-    (replace-match ":"))
   (goto-char 1)
   (insert stars)
   (goto-char (point-max))
@@ -647,15 +597,8 @@
 (defsubst dk-process-strike-through ()
   (dk-process-emphasis "+"))
 
-(defsubst dk-process-begin-span (tag-string)
-  (when (string-match " class=\"tag\"" tag-string)
-    (insert ":")))
-
 (defsubst dk-process-span ()
-  (if (string= (buffer-substring-no-properties 1 2)
-	       ":")
-      (insert ":\n")
-    (insert ?\n)))
+  (insert ?\n))
 
 (defsubst dk-process-sub ()
   (goto-char 1)
@@ -685,6 +628,7 @@
     (insert ?\n)))
 
 (defsubst dk-process-table ()
+  ;(org-table-align)
   (goto-char (point-max)) 
   (insert ?\n))
 
@@ -719,6 +663,8 @@
   (dk-process-in-line-ele)
   (goto-char 1)
   (insert "| ")
+  ;; (while (re-search-forward "[\n]+" nil t)
+  ;;   (replace-match "" nil nil))
   (goto-char (point-max))
   (insert " "))
 
@@ -797,14 +743,18 @@
   (insert "[[")
   (string-match "\\( ri:value=\"\\)\\([^\"]+\\)"
 		tag-string)
-  (insert (concat "../image/"
-		  (file-name-nondirectory (match-string 2 tag-string)))))
+  ;; (insert (concat "../image/"
+  (insert (concat "./"
+                  (file-name-nondirectory (match-string 2 tag-string))))
+  )
 
 (defsubst dk-process-riattachment (tag-string)
   (insert "[[")
   (string-match "\\( ri:filename=\"\\)\\([^\"]+\\)"
 		tag-string)
-  (insert (concat "../image/" (match-string 2 tag-string))))
+   ;; (insert (concat "../image/" (match-string 2 tag-string)))
+   (insert (concat "./" (match-string 2 tag-string)))
+  )
 
 (defsubst dk-process-begin-acimage (tag-string)
   (insert "#+CAPTION: ")
@@ -832,6 +782,7 @@
     (goto-char (point-max))
     (insert ?\n)))
     
+
 (defsubst dk-process-end-acplaintextbody ()
   (goto-char 1)
   (re-search-forward "<!\\[CDATA\\[" nil t)
@@ -865,7 +816,6 @@
     (with-current-buffer (cdr (car begin-tag-list))
       (pcase (car begin-tag)
 	("<a>" (dk-process-begin-a tag-string))
-	("<span>" (dk-process-begin-span tag-string))
 	("<ac:parameter>" (dk-process-begin-acparameter tag-string))
 	("<ac:image>" (dk-process-begin-acimage tag-string))))))
 
@@ -958,7 +908,7 @@
     (insert "#+STARTUP: align")
     (insert ?\n)))
 
-(defun dk-iterate-html-tag ()  
+(defun dk-iterate-html-tag ()
   (dk-add-org-head-properties)
   ;; If Table of Content is needed?
   (goto-char 1)
@@ -971,9 +921,9 @@
     (with-current-buffer result-org-buffer
 	(insert "#+OPTIONS: toc:nil")
 	(insert ?\n)))
-  
+
   (setq begin-tag-list ())
-  (let ((this-tag))
+  (let ((this-tag ""))
     (catch 'exit
       (while t
 	(setq this-tag (dk-search-html-tag))
@@ -985,7 +935,9 @@
 	      ((dk-check-close-html-tag (car this-tag))
 	       (dk-process-html-close-tag this-tag))
 	      (t (user-error "html parse error!"))))))
-  (with-current-buffer result-org-buffer (org-mode)))
+  (with-current-buffer result-org-buffer
+    (org-mode)))
+
 ;;------------------------------------------------------
 ;;End of 2. Convert the wiki html to orgmode format
 ;;------------------------------------------------------
@@ -1061,7 +1013,7 @@ of contents as a string, or nil if it is empty."
 			 (org-export-get-relative-level headline info)))
 		 (org-export-collect-headlines info depth scope))))
     (when toc-entries
-      "<p><strong><span style=\"color: black;\"><img class=\"editor-inline-macro\" src=\"/wiki/plugins/servlet/confluence/placeholder/macro?definition=e3RvY30&locale=en_GB&version=2\" data-macro-name=\"toc\" data-macro-id=\"d3fd2cf9-db86-4ae0-95b0-bc542e8a1cfe\" data-macro-schema-version=\"1\"></span></strong></p>")))
+      "<h1><img class=\"editor-inline-macro\" src=\"https://wiki.wdf.sap.corp/wiki/plugins/servlet/confluence/placeholder/macro?definition=e3RvY30&amp;locale=en_GB&amp;version=2\" data-macro-name=\"toc\" data-macro-id=\"d3fd2cf9-db86-4ae0-95b0-bc542e8a1cfe\" data-macro-schema-version=\"1\"></h1>")))
 
 (defun dk-sapwiki-headline (headline contents info)
   "Derive function org-html-headline"
@@ -1109,7 +1061,7 @@ of contents as a string, or nil if it is empty."
                          (org-html-begin-plain-list type))
                     itemized-body
                     (and (org-export-last-sibling-p headline info)
-                         (org-html-end-plain-list type))))
+                         (dk-html-end-plain-list type))))
         (let ((extra-class (org-element-property :HTML_CONTAINER_CLASS headline))
               (first-content (car (org-element-contents headline))))
           ;; Standard headline.  Export it as a section.
@@ -1120,62 +1072,14 @@ of contents as a string, or nil if it is empty."
                           (concat
                            (and numberedp
                                 (format
-                                 "<span style=\"color:black; margin-right:10px\">%s&nbsp;</span>"
+                                 "<span>%s</span> "
                                  (mapconcat #'number-to-string numbers ".")))
                            full-text)
                           level)
+
                   (if (eq (org-element-type first-content) 'section) contents
                     (concat (dk-sapwiki-section first-content "" info) contents))
                   ))))))
-
-(defun dk-sapwiki-format-headline-function
-  (todo todo-type priority text tags info)
-  (let ((todo (dk-sapwiki--todo todo info))
-  	(priority (dk-sapwiki--priority priority info))
-  	(tags (dk-sapwiki--tags tags info)))
-    (concat todo
-    	    priority
-	    text
-	    (and tags
-		 (format
-		  "<span style=\"color:#006400; margin-left:80px\"> %s </span>"
-		  tags)))))
-
-;;;; TODO
-(defun dk-sapwiki--todo (todo info)
-  "Format TODO keywords into HTML."
-  (when todo
-    (if (member todo org-done-keywords)
-	(format "<span style=\"color:#85981C; margin-right:10px\">%s </span>" todo)
-      (format "<span style=\"background:red; margin-right:10px\">%s </span>" todo))))
-
-;;;; Priority
-(defun dk-sapwiki--priority (priority info)
-  "Format a priority into HTML.
-PRIORITY is the character code of the priority or nil.  INFO is
-a plist containing export options."
-  (case priority
-    (65  "<span style=\"color:gray; font-style:italic; margin-right:10px\"> [#A] </span>")
-    (66  "<span style=\"color:gray; font-style:italic; margin-right:10px\"> [#B] </span>")
-    (67  "<span style=\"color:gray; font-style:italic; margin-right:10px\"> [#C] </span>")
-    ('otherwise "")))
-  ;; (and priority
-  ;;      (format
-  ;; 	"<span style=\"color:dimgray; font-style:italic; margin-right:10px\">%s</span>"
-  ;; 	priority)))
-
-;;;; Tags
-(defun dk-sapwiki--tags (tags info)
-  "Format TAGS into HTML.
-INFO is a plist containing export options."
-  (when tags
-    (mapconcat
-     (lambda (tag)
-       (format ":%s"
-	       tag))
-     tags "&#xa0;")))
-
-(setq org-html-format-headline-function 'dk-sapwiki-format-headline-function)
 
 (defun dk-sapwiki-section (section contents info)
   ( or contents "" ))
@@ -1186,6 +1090,13 @@ INFO is a plist containing export options."
     (unordered "<ul>")
     (descriptive "<dl>")))
 
+(defun dk-html-end-plain-list (type)
+  "Insert the end of the HTML list depending on TYPE."
+  (case type
+    (ordered "</ol>")
+    (unordered "</ul>")
+    (descriptive "</dl>")))
+
 (defun dk-sapwiki-plain-list (plain-list contents info)
   "Transcode a PLAIN-LIST element from Org to HTML.
 CONTENTS is the contents of the list.  INFO is a plist holding
@@ -1194,46 +1105,30 @@ contextual information."
 	 (type (org-element-property :type plain-list)))
     (format "%s\n%s%s"
 	    (dk-html-begin-plain-list type)
-	    contents (org-html-end-plain-list type))))
+	    contents (dk-html-end-plain-list type))))
 
 (defun dk-html--wrap-image (contents info &optional caption label)
   "Wrap CONTENTS string within an appropriate environment for images.INFO is a plist used as a communication channel.  When optional arguments CAPTION and LABEL are given, use them for caption and \"id\" attribute."
   (dk-collect-attachment-comments (format "%s (via emacs)" caption))
-  (if caption
-      (format "<p align=\"center\">%s</p>\n<p align=\"center\">%s</p>"
-	      (replace-regexp-in-string "-replaceable_caption-" caption contents)
-	      caption)
-    (format "<p align=\"center\">%s</p>"
-	    (replace-regexp-in-string "-replaceable_caption-" caption contents))))
-  
+  (format "<p align=\"center\">%s</p>\n<p align=\"center\">%s</p>"
+	  (replace-regexp-in-string "-replaceable_caption-" caption contents)
+	  caption))
 
 (defun dk-collect-attachment-comments (caption)
-  "(((fieldname . \"value\") ...)*)"
-  (let ((current-container (car dk-sapwiki-attachment-comments)))
-    (if (and current-container
-	     (< (length current-container) 5))
-	(progn
-	 (add-to-list 'current-container
-		      (cons (dk-get-next-comment-symbol current-container)
-			    caption))
-	 (setcar dk-sapwiki-attachment-comments current-container))
-      (setq current-container ())
-      (add-to-list 'current-container
-		   (cons (dk-get-next-comment-symbol current-container)
-			 caption))
-      (add-to-list 'dk-sapwiki-attachment-comments
-		   current-container nil 'eq))))
+  " (fieldname . \"value\")*"
+  (add-to-list 'dk-sapwiki-attachment-comments
+	       (cons (dk-get-next-comment-symbol) caption)))
 
-(defun dk-get-next-comment-symbol (current-container)
-  (if current-container
+(defun dk-get-next-comment-symbol ()
+  (if dk-sapwiki-attachment-comments
       (make-symbol
        (concat "comment_"
 	       (number-to-string
 		(+ (string-to-number
-		    (car
+		    (nth 1
 			 (split-string
 			  (symbol-name
-			   (car (car current-container)))
+			   (car (car dk-sapwiki-attachment-comments)))
 			  "_")))
 		  1))))
     (make-symbol "comment_0")))
@@ -1263,38 +1158,25 @@ contextual information."
    info))
 
 (defun dk-collect-attachments (source)
-  " ((fieldname \"filename\" \"MIME type\" \"file data\")...)*"
+  " (fieldname \"filename\" \"MIME type\" \"file data\")*"
   (let* ((filename (file-name-nondirectory source))
-	 (mimetype (dk-get-mime-type filename))
-	 (current-container (car dk-sapwiki-attachments)))
-    (if (and current-container
-	     (< (length current-container) 5))
-	(progn
-	  (add-to-list 'current-container
-		       (list (dk-get-next-fieldname-symbol current-container)
-      			 filename
-			 mimetype
-			 (dk-get-attachment-rawdata source)))
-	  (setcar dk-sapwiki-attachments current-container))
-      (setq current-container ())
-      (add-to-list 'current-container
-      		   (list (dk-get-next-fieldname-symbol current-container)
-      			 filename
-			 mimetype
-			 (dk-get-attachment-rawdata source)))
+	 (mimetype (dk-get-mime-type filename)))
       (add-to-list 'dk-sapwiki-attachments
-		   current-container nil 'eq))))
+      		   (list (dk-get-next-fieldname-symbol)
+      			 filename
+			 mimetype
+			 (dk-get-attachment-rawdata source)))))
 
-(defun dk-get-next-fieldname-symbol (current-container)
-  (if current-container
+(defun dk-get-next-fieldname-symbol ()
+  (if dk-sapwiki-attachments
       (make-symbol
        (concat "file_"
 	       (number-to-string
 		(+ (string-to-number
-		    (car
+		    (nth 1
 			 (split-string
 			  (symbol-name
-			   (car (car current-container)))
+			   (car (car dk-sapwiki-attachments)))
 			  "_")))
 		  1))))
     (make-symbol "file_0")))
@@ -1304,11 +1186,12 @@ contextual information."
   "Currently, only image is allowed! "
   (concat "image/" (file-name-extension filename)))
 
-(defun dk-get-attachment-rawdata (source)
+(defun dk-get-attachment-rawdata (filename)
   "Return the raw data of the attachment
    TODO: try to differenciate the relative path and absolute path"
   (with-temp-buffer
-    (insert-file-contents source)
+    ;; (insert-file-contents (concat "../image/" filename))
+    (insert-file-contents (concat "./" filename)) ;; By Marvin
     (buffer-substring-no-properties (point-min) (point-max))))    
   
 (defun dk-sapwiki-link (link desc info)
@@ -1592,8 +1475,7 @@ contextual information."
 			"\n</colgroup>"))))
 		 (org-html-table-first-row-data-cells table info) "\n")))))
        (format "<table%s>\n%s\n%s\n%s</table>"
-	       ;; (if (equal attributes "") "" (concat " " attributes))
-	       ""
+	       (if (equal attributes "") "" (concat " " attributes))
 	       (if (not caption) ""
 		 (format (if (plist-get info :html-table-caption-above)
 			     "<caption class=\"t-above\">%s</caption>"

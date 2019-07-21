@@ -101,8 +101,9 @@
       ;; (add-to-list 'org-modules "org-habit")
       ;; (add-to-list 'org-modules 'org-habit)
       (require 'org-habit)
-      ;; enable taskjuggler exporter
-      ;; refer to https://orgmode.org/worg/exporters/taskjuggler/ox-taskjuggler.html
+
+      ;; Enable publish taskjuggler
+      ;; https://orgmode.org/worg/exporters/taskjuggler/ox-taskjuggler.html
       (require 'ox-taskjuggler)
       ;; Set auto fill in text mode
       (add-hook 'org-mode-hook 'auto-fill-mode)

@@ -225,3 +225,21 @@ same directory as the org-buffer and insert a link to this file."
                        (format " New-BurntToastNotification -Text '%s' -Sound 'Alarm2' -SnoozeAndDismiss" message)
                        ))))
 
+
+;; Different Apps to Be Called Under Different OS Platform
+;;   Win: Powershell Tool https://github.com/Windos/BurntToast
+(defun qianmarv-org/show-alarm (min-to-app new-time message)
+  (cond ((string-equal system-type "windows-nt")
+         (call-process "powershell"
+                       nil
+                       t
+                       nil
+                       (format " New-BurntToastNotification -Text '%s' -Sound 'Alarm2' -SnoozeAndDismiss" message)
+                       ))))
+
+;;; Show the clocked-in task - if any - in the header line
+(defun qianmarv/show-org-clock-in-header-line ()
+  (setq-default header-line-format '((" " org-mode-line-string " "))))
+
+(defun qianmarv/hide-org-clock-from-header-line ()
+  (setq-default header-line-format nil))

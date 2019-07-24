@@ -88,6 +88,7 @@
 ;; Refer to: https://github.com/zilongshanren/spacemacs-private/blob/develop/layers/zilongshanren-org/packages.el
 (defun qianmarv-org/post-init-org ()
   (add-hook 'org-mode-hook (lambda () (spacemacs/toggle-line-numbers-off)) 'append)
+  (add-hook 'org-mode-hook (lambda () (spacemacs/toggle-auto-fill-mode-off)) 'append)
   (with-eval-after-load 'org
     (progn
       (spacemacs|disable-company org-mode)
@@ -97,14 +98,51 @@
         "iq" 'qianmarv-org/insert-quote
         "ip" 'qianmarv-org/insert-screenshot)
       (require 'org-compat)
+
       (require 'org)
       ;; (add-to-list 'org-modules "org-habit")
       ;; (add-to-list 'org-modules 'org-habit)
       (require 'org-habit)
 
+      (visual-line-mode)
+
       ;; Enable publish taskjuggler
       ;; https://orgmode.org/worg/exporters/taskjuggler/ox-taskjuggler.html
       (require 'ox-taskjuggler)
+
+      (setq org-taskjuggler-reports-directory "~/Org/TaskJuggler/reports")
+      ;;https://hugoideler.com/2018/09/org-mode-and-wide-taskjuggler-html-export/
+      (setq org-taskjuggler-default-reports
+            '("textreport report \"Plan\" {
+  formats html
+  header '== %title =='
+  center -8<-
+    [#Plan Plan] | [#Resource_Allocation Resource Allocation]
+    ----
+    === Plan ===
+    <[report id=\"plan\"]>
+    ----
+    === Resource Allocation ===
+    <[report id=\"resourceGraph\"]>
+  ->8-
+}
+# A traditional Gantt chart with a project overview.
+taskreport plan \"\" {
+  headline \"Project Plan\"
+  columns bsi, name, start, end, complete, effort, effortdone, effortleft, chart { width 1000 }
+  loadunit shortauto
+  hideresource 1
+}
+# A graph showing resource allocation. It identifies whether each
+# resource is under- or over-allocated for.
+resourcereport resourceGraph \"\" {
+  headline \"Resource Allocation Graph\"
+  columns no, name, effort, weekly { width 1000 }
+  loadunit shortauto
+  hidetask ~(isleaf() & isleaf_())
+  sorttasks plan.start.up
+}"))
+      (setq org-taskjuggler-valid-task-attributes '(account start note duration endbuffer endcredit end flags journalentry length limits maxend maxstart minend minstart period reference responsible scheduling startbuffer startcredit statusnote chargeset charge priority))
       ;; Set auto fill in text mode
       (add-hook 'org-mode-hook 'auto-fill-mode)
 
@@ -211,12 +249,12 @@
               ("@2019_Health" . (:foreground "OrangeRed" :weight bold))
               ("G@2019_Education" . (:foreground "OrangeRed" :weight bold))
               ("G@2019_Trip" . (:foreground "OrangeRed" :weight bold))
-	      ("G@2019_Decorate" . (:foreground "OrangeRed" :weight bold))
+              ("G@2019_Decorate" . (:foreground "OrangeRed" :weight bold))
               ;; ("BONUS" . (:foreground "GoldenRod" :weight bold))
               )
             )
 
-
+
 ;;; Refiling
 
       (setq org-refile-use-cache nil)
@@ -282,50 +320,44 @@
         "Make notebook NAME to full path. TODO create the notebook if NOT exist."
         (concat qianmarv/gtd-directory "/" name ".org"))
 
-(let* ((journal-book (qianmarv/make-notebook "Journal"))
-       (inbox-book (qianmarv/make-notebook "Inbox"))
-       (capture-book (qianmarv/make-notebook "Event"))
-       (agenda-book (qianmarv/make-notebook "Agenda"))
-       (project-book (qianmarv/make-notebook "Projects")))
+      (let* ((journal-book (qianmarv/make-notebook "Journal"))
+             (inbox-book (qianmarv/make-notebook "Inbox"))
+             (capture-book (qianmarv/make-notebook "Event"))
+             (agenda-book (qianmarv/make-notebook "Agenda"))
+             (project-book (qianmarv/make-notebook "Projects")))
 
-  (setq org-capture-templates
-        `(
-          ("j" "Journals, Morning Write" entry
-           (file+olp+datetree ,journal-book) "* Morning Write\n%U\n%?" :tree-type week)
-          ("b" "Break / Interrupt" entry
-           (file+headline ,capture-book "Other Interrupts") "* DONE %?\n%U %i\n" :clock-in t :clock-resume t)
-          ("c" "Collect/Capture")
-          ("cn" "Take Notes" entry
-           (file+headline ,capture-book "Notes") "* %^{Note Title}\nNote taken on %U \\\\\n%?\n%K")
-          ("ci" "Capture Ideas/Mighty new todos" entry
-           (file+headline ,capture-book "Ideas")  "* TODO %?\n %i\n")
-          ("cb" "Books want Read" entry
-           (file+headline ,capture-book "Books") (file ,(qianmarv/expand-template "book")))
-          ("cm" "Movies want Watch" entry
-           (file+headline ,capture-book "Movies") (file ,(qianmarv/expand-template "movie")))
-          ("r" "Review")
-          ("rd" "Daily Review"  entry
-           (file+olp+datetree ,journal-book) (file ,(qianmarv/expand-template "daily_review")) :tree-type week :time-prompt t)
-          ("rw" "Weekly Review"  entry
-           (file+olp+datetree ,journal-book) (file ,(qianmarv/expand-template "weekly_review")) :tree-type week :time-prompt t)
-          ("rm" "Monthly Review"  entry
-           (file+olp+datetree ,journal-book) (file ,(qianmarv/expand-template "monthly_review")) :tree-type week :time-prompt t))))
+        (setq org-capture-templates
+              `(
+                ("j" "Journals, Morning Write" entry
+                 (file+olp+datetree ,journal-book) "* Morning Write\n%U\n%?" :tree-type week)
+                ("b" "Break / Interrupt" entry
+                 (file+headline ,capture-book "Other Interrupts") "* DONE %?\n%U %i\n" :clock-in t :clock-resume t)
+                ("c" "Collect/Capture")
+                ("cn" "Take Notes" entry
+                 (file+headline ,capture-book "Notes") "* %^{Note Title}\nNote taken on %U \\\\\n%?\n%K")
+                ("ci" "Capture Ideas/Mighty new todos" entry
+                 (file+headline ,capture-book "Ideas")  "* TODO %?\n %i\n")
+                ("cb" "Books want Read" entry
+                 (file+headline ,capture-book "Books") (file ,(qianmarv/expand-template "book")))
+                ("cm" "Movies want Watch" entry
+                 (file+headline ,capture-book "Movies") (file ,(qianmarv/expand-template "movie")))
+                ("r" "Review")
+                ("rd" "Daily Review"  entry
+                 (file+olp+datetree ,journal-book) (file ,(qianmarv/expand-template "daily_review")) :tree-type week :time-prompt t)
+                ("rw" "Weekly Review"  entry
+                 (file+olp+datetree ,journal-book) (file ,(qianmarv/expand-template "weekly_review")) :tree-type week :time-prompt t)
+                ("rm" "Monthly Review"  entry
+                 (file+olp+datetree ,journal-book) (file ,(qianmarv/expand-template "monthly_review")) :tree-type week :time-prompt t))))
 
-;;; Show the clocked-in task - if any - in the header line
-(defun qianmarv/show-org-clock-in-header-line ()
-  (setq-default header-line-format '((" " org-mode-line-string " "))))
 
-(defun qianmarv/hide-org-clock-from-header-line ()
-  (setq-default header-line-format nil))
+      (add-hook 'org-clock-in-hook 'qianmarv/show-org-clock-in-header-line)
+      (add-hook 'org-clock-out-hook 'qianmarv/hide-org-clock-from-header-line)
+      (add-hook 'org-clock-cancel-hook 'qianmarv/hide-org-clock-from-header-line)
 
-(add-hook 'org-clock-in-hook 'qianmarv/show-org-clock-in-header-line)
-(add-hook 'org-clock-out-hook 'qianmarv/hide-org-clock-from-header-line)
-(add-hook 'org-clock-cancel-hook 'qianmarv/hide-org-clock-from-header-line)
-
-;; (after-load 'org-clock
-            (define-key org-clock-mode-line-map [header-line mouse-2] 'org-clock-goto)
-            (define-key org-clock-mode-line-map [header-line mouse-1] 'org-clock-menu)
-            ;; )
+      ;; (after-load 'org-clock
+      (define-key org-clock-mode-line-map [header-line mouse-2] 'org-clock-goto)
+      (define-key org-clock-mode-line-map [header-line mouse-1] 'org-clock-menu)
+      ;; )
 
 
       ;; (setq org-agenda-files  `(,qianmarv-org/gtd-path))
@@ -338,17 +370,6 @@
       ;; Settings for Reminder - appt
       ;; Refer to: https://emacs.stackexchange.com/questions/3844/good-methods-for-setting-up-alarms-audio-visual-triggered-by-org-mode-events
       ;; --------------------------------------------------------------------
-
-      ;; Different Apps to Be Called Under Different OS Platform
-      ;;   Win: Powershell Tool https://github.com/Windos/BurntToast
-      (defun qianmarv-org/show-alarm (min-to-app new-time message)
-        (cond ((string-equal system-type "windows-nt")
-               (call-process "powershell"
-                             nil
-                             t
-                             nil
-                             (format " New-BurntToastNotification -Text '%s' -Sound 'Alarm2' -SnoozeAndDismiss" message)
-                             ))))
 
       (setq org-show-notification-handler
             (lambda (msg) (qianmarv-org/show-alarm nil nil msg)))
@@ -376,29 +397,30 @@
       ;;           (lambda ()
       ;;             (qianmarv-org/show-alarm 0 0 "Pomodoro Killed - One does not simply kill a pomodoro!")))
       ;; Setup Publish
-(setq org-publish-project-alist
-      `(
-        ("Blog-Note"
-         :base-directory "~/Org/Blog/"
-         :recursive t
-         :publishing-directory "~/Git/blog/source/_posts/"
-         :publishing-function org-md-publish-to-md)
-        ("Blog-Static"
-         :base-directory "~/Org/Blog/"
-         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-         :publishing-directory "~/Git/blog/source/_posts/"
-         :recursive t
-         :publishing-function org-publish-attachment)
-        ("Blog" :components ("Blog-Note" "Blog-Static"))))
+      (setq org-publish-project-alist
+            `(
+              ("Blog-Note"
+               :base-directory "~/Org/Blog/"
+               :recursive t
+               :publishing-directory "~/Git/blog/source/_posts/"
+               :publishing-function org-md-publish-to-md)
+              ("Blog-Static"
+               :base-directory "~/Org/Blog/"
+               :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+               :publishing-directory "~/Git/blog/source/_posts/"
+               :recursive t
+               :publishing-function org-publish-attachment)
+              ("Blog" :components ("Blog-Note" "Blog-Static"))))
 
-;; Publish with
-;; (org-publish-current-project) ;; While having a file in your project open
-;; OR
-;; M-x org-publish <RET> project-name <RET>
+      ;; Publish with
+      ;; (org-publish-current-project) ;; While having a file in your project open
+      ;; OR
+      ;; M-x org-publish <RET> project-name <RET>
 
-(setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")))
+      (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex")))
 
-(setq org-agenda-include-diary t
-      diary-file (concat qianmarv/gtd-directory "/diary.org")
-      org-agenda-diary-file 'diary-file)
+      (setq org-agenda-include-diary t
+            diary-file (concat qianmarv/gtd-directory "/diary.org")
+            org-agenda-diary-file 'diary-file)
       )))
+
